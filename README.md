@@ -1,52 +1,66 @@
-# ChopChain Food Tribe Monorepo
+## Foundry
 
-ChopChain is a Web3-powered food delivery app for the African market, featuring stablecoin payments, vendor wallet abstraction, and token incentives for users and delivery agents.
+**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
 
-## Monorepo Structure
+Foundry consists of:
 
+-   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
+-   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
+-   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
+-   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+
+## Documentation
+
+https://book.getfoundry.sh/
+
+## Usage
+
+### Build
+
+```shell
+$ forge build
 ```
-chopchain-food-tribe/
-  frontend/    # React PWA (mobile-first, Vite + Tailwind)
-  contracts/   # Smart contracts (Solidity, placeholder for now)
-  README.md    # This file
+
+### Test
+
+```shell
+$ forge test
 ```
 
-## Getting Started
+### Format
 
-### Frontend
+```shell
+$ forge fmt
+```
 
-1. `cd frontend`
-2. Install dependencies:
-   ```sh
-   npm install
-   # or
-   bun install
-   ```
-3. Start the development server:
-   ```sh
-   npm run dev
-   # or
-   bun run dev
-   ```
+### Gas Snapshots
 
-### Contracts
+```shell
+$ forge snapshot
+```
 
-- All contract files are in the `contracts/` directory.
-- Placeholder files exist for Escrow, CHOPToken, and VendorRegistry contracts.
-- When ready, initialize your preferred smart contract framework (e.g., Hardhat, Foundry) in this directory.
+### Anvil
 
-## Development Notes
+```shell
+$ anvil
+```
 
-- **Frontend** uses mock wallet and cart logic for now (see `frontend/hooks/`).
-- **Smart contract** logic will be integrated post-MVP using the Thirdweb SDK.
-- See `frontend/DEV_DECISIONS.md` for architectural and integration decisions.
+### Deploy
 
-## Contributing
+```shell
+$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+```
 
-- Keep UX logic isolated from blockchain concerns (except in hooks).
-- Use modular hooks for wallet, cart, and contract logic.
-- Document major decisions in `frontend/DEV_DECISIONS.md`.
+### Cast
 
----
+```shell
+$ cast <subcommand>
+```
 
-For more details, see the code and comments in each directory.
+### Help
+
+```shell
+$ forge --help
+$ anvil --help
+$ cast --help
+```
