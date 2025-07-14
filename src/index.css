@@ -1,58 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Noto+Sans:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* ChopChain Design System - Modern fintech + Afrocentric warmth */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Base colors - Warm neutrals */
+    --background: 36 14% 98%; /* #FAF9F6 */
+    --foreground: 215 25% 7%; /* #101828 */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 36 14% 98%;
+    --card-foreground: 215 25% 7%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 36 14% 98%;
+    --popover-foreground: 215 25% 7%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* ChopChain brand colors */
+    --primary: 21 92% 54%; /* #F47B20 - Orange warmth */
+    --primary-foreground: 36 14% 98%;
+    --primary-glow: 21 92% 64%; /* Lighter orange for gradients */
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 174 100% 29%; /* #009688 - Teal trust */
+    --secondary-foreground: 36 14% 98%;
+    --secondary-glow: 174 75% 39%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 48 100% 50%; /* #FFD700 - Gold rewards */
+    --accent-foreground: 215 25% 7%;
+    --accent-glow: 48 100% 70%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --muted: 36 8% 94%;
+    --muted-foreground: 215 13% 54%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 36 14% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 36 8% 88%;
+    --input: 36 8% 88%;
+    --ring: 21 92% 54%;
 
-    --radius: 0.5rem;
+    --radius: 1rem; /* xl border radius for soft UI */
 
-    --sidebar-background: 0 0% 98%;
+    /* Gradients - African-inspired blends */
+    --gradient-sunset: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+    --gradient-hibiscus: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
+    --gradient-trust: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--secondary-glow)));
+    --gradient-rewards: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--accent-glow)));
 
-    --sidebar-foreground: 240 5.3% 26.1%;
+    /* Shadows - Light glow effects */
+    --shadow-card: 0 1px 3px hsla(215, 25%, 7%, 0.08), 0 1px 2px hsla(215, 25%, 7%, 0.06);
+    --shadow-card-hover: 0 4px 6px hsla(215, 25%, 7%, 0.1), 0 2px 4px hsla(215, 25%, 7%, 0.06);
+    --shadow-glow: 0 0 0 1px hsla(var(--primary), 0.1), 0 4px 16px hsla(var(--primary), 0.15);
 
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Sidebar (keeping defaults for now) */
+    --sidebar-background: 36 8% 97%;
+    --sidebar-foreground: 215 20% 30%;
+    --sidebar-primary: 21 92% 54%;
+    --sidebar-primary-foreground: 36 14% 98%;
+    --sidebar-accent: 36 8% 94%;
+    --sidebar-accent-foreground: 215 25% 7%;
+    --sidebar-border: 36 8% 88%;
+    --sidebar-ring: 21 92% 54%;
   }
 
   .dark {
