@@ -1,73 +1,52 @@
-# Welcome to your Lovable project
+# ChopChain Food Tribe Monorepo
 
-## Project info
+ChopChain is a Web3-powered food delivery app for the African market, featuring stablecoin payments, vendor wallet abstraction, and token incentives for users and delivery agents.
 
-**URL**: https://lovable.dev/projects/de5c985c-7ff9-48d8-83cc-5fcac805c0cb
+## Monorepo Structure
 
-## How can I edit this code?
-
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/de5c985c-7ff9-48d8-83cc-5fcac805c0cb) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+chopchain-food-tribe/
+  frontend/    # React PWA (mobile-first, Vite + Tailwind)
+  contracts/   # Smart contracts (Solidity, placeholder for now)
+  README.md    # This file
 ```
 
-**Edit a file directly in GitHub**
+## Getting Started
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Frontend
 
-**Use GitHub Codespaces**
+1. `cd frontend`
+2. Install dependencies:
+   ```sh
+   npm install
+   # or
+   bun install
+   ```
+3. Start the development server:
+   ```sh
+   npm run dev
+   # or
+   bun run dev
+   ```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Contracts
 
-## What technologies are used for this project?
+- All contract files are in the `contracts/` directory.
+- Placeholder files exist for Escrow, CHOPToken, and VendorRegistry contracts.
+- When ready, initialize your preferred smart contract framework (e.g., Hardhat, Foundry) in this directory.
 
-This project is built with:
+## Development Notes
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- **Frontend** uses mock wallet and cart logic for now (see `frontend/hooks/`).
+- **Smart contract** logic will be integrated post-MVP using the Thirdweb SDK.
+- See `frontend/DEV_DECISIONS.md` for architectural and integration decisions.
 
-## How can I deploy this project?
+## Contributing
 
-Simply open [Lovable](https://lovable.dev/projects/de5c985c-7ff9-48d8-83cc-5fcac805c0cb) and click on Share -> Publish.
+- Keep UX logic isolated from blockchain concerns (except in hooks).
+- Use modular hooks for wallet, cart, and contract logic.
+- Document major decisions in `frontend/DEV_DECISIONS.md`.
 
-## Can I connect a custom domain to my Lovable project?
+---
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+For more details, see the code and comments in each directory.
