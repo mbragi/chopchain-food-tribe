@@ -4,17 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
-
-interface MenuItem {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-  category: string;
-  popular?: boolean;
-  spicyLevel?: number;
-}
+import { MenuItemCard, MenuItem } from "@/components/MenuItemCard";
 
 const menuItems: MenuItem[] = [
   {
@@ -32,7 +22,7 @@ const menuItems: MenuItem[] = [
     name: "Pepper Soup (Catfish)",
     description: "Spicy traditional soup with fresh catfish",
     price: 22.50,
-    image: "/placeholder.svg", 
+    image: "/placeholder.svg",
     category: "Soup",
     spicyLevel: 3
   },
@@ -80,13 +70,13 @@ const vendor = {
 
 export default function VendorDetails() {
   const navigate = useNavigate();
-  const [cart, setCart] = useState<{[key: number]: number}>({});
+  const [cart, setCart] = useState<{ [key: number]: number }>({});
   const [selectedCategory, setSelectedCategory] = useState("All");
-  
+
   const categories = ["All", ...Array.from(new Set(menuItems.map(item => item.category)))];
-  
-  const filteredItems = selectedCategory === "All" 
-    ? menuItems 
+
+  const filteredItems = selectedCategory === "All"
+    ? menuItems
     : menuItems.filter(item => item.category === selectedCategory);
 
   const addToCart = (itemId: number) => {
@@ -121,15 +111,15 @@ export default function VendorDetails() {
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center space-x-4">
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => navigate("/")}
               className="rounded-xl"
             >
               <ArrowLeft className="w-4 h-4" />
             </Button>
-            
+
             <div className="flex-1">
               <h1 className="text-xl font-semibold">{vendor.name}</h1>
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
@@ -142,7 +132,7 @@ export default function VendorDetails() {
             </div>
 
             {cartItemCount > 0 && (
-              <Button 
+              <Button
                 onClick={() => navigate("/cart")}
                 className="relative bg-gradient-sunset hover:shadow-glow rounded-xl"
               >
@@ -162,7 +152,7 @@ export default function VendorDetails() {
         <div className="h-48 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
           <span className="text-6xl">🍛</span>
         </div>
-        
+
         <div className="container mx-auto px-4 py-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card className="rounded-xl border-border">
@@ -172,7 +162,7 @@ export default function VendorDetails() {
                 <p className="text-xs text-muted-foreground">${vendor.deliveryFee}</p>
               </CardContent>
             </Card>
-            
+
             <Card className="rounded-xl border-border">
               <CardContent className="p-4 text-center">
                 <Clock className="w-5 h-5 mx-auto mb-2 text-secondary" />
@@ -180,7 +170,7 @@ export default function VendorDetails() {
                 <p className="text-xs text-muted-foreground">{vendor.deliveryTime}</p>
               </CardContent>
             </Card>
-            
+
             <Card className="rounded-xl border-border">
               <CardContent className="p-4 text-center">
                 <ShoppingCart className="w-5 h-5 mx-auto mb-2 text-accent" />
@@ -200,11 +190,10 @@ export default function VendorDetails() {
               <Button
                 key={category}
                 variant={selectedCategory === category ? "default" : "outline"}
-                className={`whitespace-nowrap rounded-xl ${
-                  selectedCategory === category 
-                    ? "bg-gradient-hibiscus text-primary-foreground" 
-                    : "hover:bg-muted"
-                }`}
+                className={`whitespace-nowrap rounded-xl ${selectedCategory === category
+                  ? "bg-gradient-hibiscus text-primary-foreground"
+                  : "hover:bg-muted"
+                  }`}
                 onClick={() => setSelectedCategory(category)}
               >
                 {category}
@@ -216,69 +205,14 @@ export default function VendorDetails() {
         {/* Menu Items */}
         <section className="space-y-4">
           {filteredItems.map((item) => (
-            <Card key={item.id} className="overflow-hidden rounded-xl border-border hover:shadow-card-hover transition-all">
-              <CardContent className="p-0">
-                <div className="flex">
-                  <div className="flex-1 p-4">
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-2 mb-1">
-                          <h3 className="font-semibold text-foreground">{item.name}</h3>
-                          {item.popular && (
-                            <Badge className="bg-accent/20 text-accent-foreground text-xs">
-                              Popular
-                            </Badge>
-                          )}
-                          {getSpicyIndicator(item.spicyLevel) && (
-                            <span className="text-xs">{getSpicyIndicator(item.spicyLevel)}</span>
-                          )}
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-3">{item.description}</p>
-                        <p className="text-lg font-bold text-primary">${item.price}</p>
-                      </div>
-                    </div>
-
-                    {/* Add to cart controls */}
-                    <div className="flex items-center space-x-2">
-                      {cart[item.id] > 0 ? (
-                        <div className="flex items-center space-x-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => removeFromCart(item.id)}
-                            className="w-8 h-8 p-0 rounded-lg"
-                          >
-                            <Minus className="w-4 h-4" />
-                          </Button>
-                          <span className="font-medium w-8 text-center">{cart[item.id]}</span>
-                          <Button
-                            size="sm"
-                            onClick={() => addToCart(item.id)}
-                            className="w-8 h-8 p-0 rounded-lg bg-gradient-sunset"
-                          >
-                            <Plus className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      ) : (
-                        <Button
-                          size="sm"
-                          onClick={() => addToCart(item.id)}
-                          className="bg-gradient-sunset hover:shadow-glow rounded-lg"
-                        >
-                          <Plus className="w-4 h-4 mr-1" />
-                          Add
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Item image */}
-                  <div className="w-24 h-24 m-4 bg-gradient-to-br from-muted to-muted/60 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <span className="text-2xl">🍽️</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <MenuItemCard
+              key={item.id}
+              item={item}
+              quantity={cart[item.id] || 0}
+              add={addToCart}
+              remove={removeFromCart}
+              getSpicyIndicator={getSpicyIndicator}
+            />
           ))}
         </section>
 

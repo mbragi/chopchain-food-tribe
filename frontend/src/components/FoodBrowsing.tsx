@@ -3,13 +3,14 @@ import { Search, MapPin, Star, Clock, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
+import { VendorCard, Vendor } from "@/components/VendorCard";
 
 const categories = [
   "All", "Jollof", "Soups", "Snacks", "Rice", "Protein", "Swallow", "Drinks"
 ];
 
-const featuredVendors = [
+const featuredVendors: Vendor[] = [
   {
     id: 1,
     name: "Mama Temi's Kitchen",
@@ -25,7 +26,7 @@ const featuredVendors = [
     id: 2,
     name: "Chop Life Lagos",
     rating: 4.6,
-    deliveryTime: "15-25 min", 
+    deliveryTime: "15-25 min",
     category: "Fast Food",
     image: "/placeholder.svg",
     specialties: ["Shawarma", "Suya"],
@@ -62,7 +63,7 @@ export default function FoodBrowsing() {
                 Earn $CHOP
               </Badge>
             </div>
-            
+
             <div className="flex items-center space-x-3">
               <div className="flex items-center text-sm text-muted-foreground">
                 <MapPin className="w-4 h-4 mr-1" />
@@ -96,11 +97,10 @@ export default function FoodBrowsing() {
               <Button
                 key={category}
                 variant={selectedCategory === category ? "default" : "outline"}
-                className={`whitespace-nowrap rounded-xl ${
-                  selectedCategory === category 
-                    ? "bg-gradient-hibiscus text-primary-foreground" 
+                className={`whitespace-nowrap rounded-xl ${selectedCategory === category
+                    ? "bg-gradient-hibiscus text-primary-foreground"
                     : "hover:bg-muted"
-                }`}
+                  }`}
                 onClick={() => setSelectedCategory(category)}
               >
                 {category}
@@ -120,74 +120,12 @@ export default function FoodBrowsing() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {featuredVendors.map((vendor) => (
-              <Card 
-                key={vendor.id} 
-                className="overflow-hidden hover:shadow-card-hover transition-all duration-300 cursor-pointer rounded-2xl border-border"
-              >
-                <div className="relative">
-                  <div className="h-48 bg-gradient-to-br from-muted to-muted/60 flex items-center justify-center">
-                    <span className="text-muted-foreground">🍛 Vendor Image</span>
-                  </div>
-                  
-                  {/* Status badge */}
-                  <Badge 
-                    className={`absolute top-3 right-3 ${
-                      vendor.isOpen 
-                        ? "bg-secondary text-secondary-foreground" 
-                        : "bg-muted text-muted-foreground"
-                    }`}
-                  >
-                    {vendor.isOpen ? "Open" : "Closed"}
-                  </Badge>
-
-                  {/* Price range */}
-                  <Badge className="absolute top-3 left-3 bg-background/90 text-foreground">
-                    {vendor.priceRange}
-                  </Badge>
-                </div>
-
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between mb-2">
-                    <h3 className="font-semibold text-lg text-foreground">
-                      {vendor.name}
-                    </h3>
-                    <div className="flex items-center space-x-1">
-                      <Star className="w-4 h-4 fill-accent text-accent" />
-                      <span className="text-sm font-medium">{vendor.rating}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-4 text-sm text-muted-foreground mb-3">
-                    <div className="flex items-center space-x-1">
-                      <Clock className="w-4 h-4" />
-                      <span>{vendor.deliveryTime}</span>
-                    </div>
-                    <Badge variant="outline" className="text-xs">
-                      {vendor.category}
-                    </Badge>
-                  </div>
-
-                  <div className="flex flex-wrap gap-1 mb-4">
-                    {vendor.specialties.map((specialty) => (
-                      <Badge 
-                        key={specialty} 
-                        variant="secondary" 
-                        className="text-xs bg-accent/10 text-accent-foreground"
-                      >
-                        {specialty}
-                      </Badge>
-                    ))}
-                  </div>
-
-                  <Button 
-                    className="w-full rounded-xl bg-gradient-sunset hover:shadow-glow"
-                    disabled={!vendor.isOpen}
-                    onClick={() => window.location.href = '/vendor-details'}
-                  >
-                    {vendor.isOpen ? "View Menu" : "Currently Closed"}
-                  </Button>
-                </CardContent>
-              </Card>
+              <VendorCard
+                key={vendor.id}
+                vendor={vendor}
+                onClick={() => window.location.href = '/vendor-details'}
+                disabled={!vendor.isOpen}
+              />
             ))}
           </div>
         </section>
