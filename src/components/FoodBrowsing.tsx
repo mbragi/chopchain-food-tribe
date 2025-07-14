@@ -182,6 +182,7 @@ export default function FoodBrowsing() {
                   <Button 
                     className="w-full rounded-xl bg-gradient-sunset hover:shadow-glow"
                     disabled={!vendor.isOpen}
+                    onClick={() => window.location.href = '/vendor-details'}
                   >
                     {vendor.isOpen ? "View Menu" : "Currently Closed"}
                   </Button>
