@@ -1,66 +1,61 @@
-## Foundry
+# ChopChain Monorepo
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+A Web3-powered food delivery app for the African market, integrating stablecoin payments, vendor wallet abstraction, and token incentives for users and delivery agents.
 
-Foundry consists of:
+---
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+## Overview
+ChopChain is a decentralized food delivery platform designed for the African market. It features:
+- Mobile-first PWA frontend (React + Vite + Tailwind)
+- Smart contracts for escrow, rewards, and vendor registry (Solidity, Foundry)
+- Wallet abstraction and contract interaction (Thirdweb SDK)
+- Token incentives and stablecoin checkout
 
-## Documentation
+---
 
-https://book.getfoundry.sh/
+## Monorepo Structure
 
-## Usage
-
-### Build
-
-```shell
-$ forge build
+```
+/
+├── frontend/         # Mobile-first PWA (React, Vite, Tailwind)
+├── smart_contract/   # All Foundry smart contract code, tests, and scripts
+│   ├── contracts/    # Solidity contracts (Escrow, CHOPToken, VendorRegistry)
+│   ├── test/         # Foundry tests
+│   ├── script/       # Deployment scripts
+│   ├── lib/          # Dependencies (OpenZeppelin, forge-std)
+│   ├── foundry.toml  # Foundry config
+│   └── .gitmodules   # Submodule config (if used)
+└── README.md         # Project overview (this file)
 ```
 
-### Test
+---
 
-```shell
-$ forge test
+## Getting Started
+
+### Frontend
+```sh
+cd frontend
+npm install
+npm run dev
 ```
 
-### Format
-
-```shell
-$ forge fmt
+### Smart Contracts
+```sh
+cd smart_contract
+forge install
+forge build
+forge test
 ```
 
-### Gas Snapshots
+---
 
-```shell
-$ forge snapshot
-```
+## Contribution
+- Use placeholder wallet data and mock contracts for frontend testing
+- Keep contract logic modular and isolated
+- Document any major contract or architecture changes in `frontend/DEV_DECISIONS.md`
+- PRs should include tests for new contract logic
 
-### Anvil
+---
 
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+## License
+MIT 
