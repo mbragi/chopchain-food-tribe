@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useNavigate } from "react-router-dom";
+import { AnimeLoader } from "@/components/ui/AnimeLoader";
 
 const orderStages = [
   { id: 1, name: "Order Placed", icon: CheckCircle, completed: true },
@@ -29,6 +30,15 @@ export default function OrderConfirmation() {
 
     return () => clearInterval(interval);
   }, []);
+
+  if (progress < 100) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center">
+        <AnimeLoader size={64} />
+        <p className="text-lg font-semibold text-accent mt-4">Order in progress...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
