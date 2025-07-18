@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract CHOPToken is ERC20, Ownable {
     address public minter;
 
-    constructor() ERC20("CHOP Token", "CHOP") {}
+    constructor() ERC20("CHOP Token", "CHOP") Ownable(msg.sender) {}
 
     function setMinter(address _minter) external onlyOwner {
         minter = _minter;

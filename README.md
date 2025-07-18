@@ -5,7 +5,9 @@ A Web3-powered food delivery app for the African market, integrating stablecoin 
 ---
 
 ## Overview
+
 ChopChain is a decentralized food delivery platform designed for the African market. It features:
+
 - Mobile-first PWA frontend (React + Vite + Tailwind)
 - Smart contracts for escrow, rewards, and vendor registry (Solidity, Foundry)
 - Wallet abstraction and contract interaction (Thirdweb SDK)
@@ -33,6 +35,7 @@ ChopChain is a decentralized food delivery platform designed for the African mar
 ## Getting Started
 
 ### Frontend
+
 ```sh
 cd frontend
 npm install
@@ -40,6 +43,7 @@ npm run dev
 ```
 
 ### Smart Contracts
+
 ```sh
 cd smart_contract
 forge install
