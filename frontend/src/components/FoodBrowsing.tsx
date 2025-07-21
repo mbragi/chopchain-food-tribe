@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { VendorCard, Vendor } from "@/components/VendorCard";
 import WalletConnectModal from "@/components/ui/WalletConnectModal";
 import chopchainLogo from "@/assets/chopchain-logo.png";
+import { useWallet } from "@/hooks/useWallet";
 
 const categories = [
   "All", "Jollof", "Soups", "Snacks", "Rice", "Protein", "Swallow", "Drinks"
@@ -52,6 +53,9 @@ export default function FoodBrowsing() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [walletModalOpen, setWalletModalOpen] = useState(false);
+  const { connected, address, disconnect } = useWallet();
+
+  const shortAddress = address ? address.slice(0, 6) + "..." + address.slice(-4) : "";
 
   return (
     <div className="min-h-screen bg-background">
@@ -60,15 +64,8 @@ export default function FoodBrowsing() {
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="flex items-center space-x-2">
-                <img 
-                  src={chopchainLogo} 
-                  alt="ChopChain Logo" 
-                  className="w-8 h-8 rounded-lg"
-                />
-                <h1 className="text-2xl font-bold text-foreground">ChopChain</h1>
-              </div>
+            <div className="flex items-center space-x-2">
+              <h1 className="text-2xl font-bold text-foreground">ChopChain</h1>
               <Badge variant="secondary" className="bg-gradient-rewards text-accent-foreground">
                 <Zap className="w-3 h-3 mr-1" />
                 Earn $CHOP
@@ -80,9 +77,18 @@ export default function FoodBrowsing() {
                 <MapPin className="w-4 h-4 mr-1" />
                 Lagos, NG
               </div>
-              <Button className="bg-gradient-sunset hover:shadow-glow" onClick={() => setWalletModalOpen(true)}>
-                Connect Wallet
-              </Button>
+              {connected ? (
+                <Button
+                  className="bg-gradient-trust text-primary-foreground"
+                  onClick={disconnect}
+                >
+                  {shortAddress}
+                </Button>
+              ) : (
+                <Button className="bg-gradient-sunset hover:shadow-glow" onClick={() => setWalletModalOpen(true)}>
+                  Connect Wallet
+                </Button>
+              )}
             </div>
           </div>
 
