@@ -26,4 +26,4 @@ dist-ssr
 # Cursor IDE
 .cursor
 
-**/env*
+**/.env*
