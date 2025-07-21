@@ -54,6 +54,7 @@ forge test
 ---
 
 ## Contribution
+
 - Use placeholder wallet data and mock contracts for frontend testing
 - Keep contract logic modular and isolated
 - Document any major contract or architecture changes in `frontend/DEV_DECISIONS.md`
@@ -62,4 +63,5 @@ forge test
 ---
 
 ## License
+
 MIT 

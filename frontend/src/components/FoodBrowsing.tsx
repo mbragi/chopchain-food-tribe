@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { VendorCard, Vendor } from "@/components/VendorCard";
+import WalletConnectModal from "@/components/ui/WalletConnectModal";
 
 const categories = [
   "All", "Jollof", "Soups", "Snacks", "Rice", "Protein", "Swallow", "Drinks"
@@ -49,9 +50,11 @@ const featuredVendors: Vendor[] = [
 export default function FoodBrowsing() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [walletModalOpen, setWalletModalOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-background">
+      <WalletConnectModal open={walletModalOpen} onOpenChange={setWalletModalOpen} />
       {/* Header with wallet connection */}
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
         <div className="container mx-auto px-4 py-4">
@@ -69,7 +72,7 @@ export default function FoodBrowsing() {
                 <MapPin className="w-4 h-4 mr-1" />
                 Lagos, NG
               </div>
-              <Button className="bg-gradient-sunset hover:shadow-glow">
+              <Button className="bg-gradient-sunset hover:shadow-glow" onClick={() => setWalletModalOpen(true)}>
                 Connect Wallet
               </Button>
             </div>
@@ -98,8 +101,8 @@ export default function FoodBrowsing() {
                 key={category}
                 variant={selectedCategory === category ? "default" : "outline"}
                 className={`whitespace-nowrap rounded-xl ${selectedCategory === category
-                    ? "bg-gradient-hibiscus text-primary-foreground"
-                    : "hover:bg-muted"
+                  ? "bg-gradient-hibiscus text-primary-foreground"
+                  : "hover:bg-muted"
                   }`}
                 onClick={() => setSelectedCategory(category)}
               >
