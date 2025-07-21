@@ -35,10 +35,10 @@ export default function WalletConnectModal({ open, onOpenChange }: { open: boole
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md rounded-2xl p-6 bg-background">
+      <DialogContent className="max-w-md rounded-2xl p-6 bg-card border-warm shadow-glow">
         <DialogHeader>
-          <DialogTitle className="text-primary">Wallet Connection</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-foreground font-semibold text-xl">Wallet Connection</DialogTitle>
+          <DialogDescription className="text-muted-foreground mt-2">
             {connected
               ? "You are connected to ChopChain."
               : "Connect your wallet to start ordering and earning rewards."}
@@ -75,13 +75,13 @@ export default function WalletConnectModal({ open, onOpenChange }: { open: boole
                 ))}
               </div>
             )}
-            <Button className="w-full bg-destructive text-destructive-foreground mt-4" onClick={disconnect}>
+            <Button className="w-full bg-red-500 text-white font-semibold py-3 rounded-xl hover:bg-red-600 transition-all duration-300 mt-4" onClick={disconnect}>
               Disconnect
             </Button>
           </div>
         ) : (
           <div className="flex flex-col gap-4 mt-6">
-            <Button className="w-full bg-gradient-sunset text-primary-foreground" onClick={connect} disabled={connecting}>
+            <Button className="w-full bg-gradient-sunset text-white font-semibold py-3 rounded-xl hover:shadow-warm transition-all duration-300" onClick={connect} disabled={connecting}>
               {connecting ? "Connecting..." : "Connect Wallet"}
             </Button>
           </div>
