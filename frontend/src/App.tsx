@@ -7,6 +7,8 @@ import Index from "./pages/Index";
 import VendorDetails from "./pages/VendorDetails";
 import Cart from "./pages/Cart";
 import OrderConfirmation from "./pages/OrderConfirmation";
+import Rewards from "./pages/Rewards";
+import EarnWithChop from "./pages/EarnWithChop";
 import VendorDashboard from "./pages/VendorDashboard";
 import VendorRegistration from "./pages/VendorRegistration";
 import DeliveryAgentDashboard from "./pages/DeliveryAgentDashboard";
@@ -37,38 +39,42 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<Index />} />
-            <Route path="/vendor-details" element={<VendorDetails />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/order-confirmation" element={<OrderConfirmation />} />
-            
-            {/* Vendor Routes */}
-            <Route path="/vendor/register" element={<VendorRegistration />} />
-            <Route 
-              path="/vendor/dashboard" 
-              element={
-                <ProtectedVendorRoute>
-                  <VendorDashboard />
-                </ProtectedVendorRoute>
-              } 
-            />
-            
-            {/* Delivery Agent Routes */}
-            <Route path="/delivery-agent/register" element={<DeliveryAgentRegistration />} />
-            <Route 
-              path="/delivery-agent/dashboard" 
-              element={
-                <ProtectedDeliveryAgentRoute>
-                  <DeliveryAgentDashboard />
-                </ProtectedDeliveryAgentRoute>
-              } 
-            />
-            
-            {/* Catch-all route - MUST be last */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+                            <Routes>
+                    {/* Public Routes */}
+                    <Route path="/" element={<Index />} />
+                    <Route path="/vendor-details" element={<VendorDetails />} />
+                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/order-confirmation" element={<OrderConfirmation />} />
+                    
+                    {/* Rewards Routes */}
+                    <Route path="/rewards" element={<Rewards />} />
+                    <Route path="/earn" element={<EarnWithChop />} />
+                    
+                    {/* Vendor Routes */}
+                    <Route path="/vendor/register" element={<VendorRegistration />} />
+                    <Route 
+                      path="/vendor/dashboard" 
+                      element={
+                        <ProtectedVendorRoute>
+                          <VendorDashboard />
+                        </ProtectedVendorRoute>
+                      } 
+                    />
+                    
+                    {/* Delivery Agent Routes */}
+                    <Route path="/delivery-agent/register" element={<DeliveryAgentRegistration />} />
+                    <Route 
+                      path="/delivery-agent/dashboard" 
+                      element={
+                        <ProtectedDeliveryAgentRoute>
+                          <DeliveryAgentDashboard />
+                        </ProtectedDeliveryAgentRoute>
+                      } 
+                    />
+                    
+                    {/* Catch-all route - MUST be last */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>

@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Search, MapPin, Star, Clock, Zap, Store, Truck } from "lucide-react";
+import { Search, MapPin, Star, Clock, Zap, Store, Truck, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { VendorCard, Vendor } from "@/components/VendorCard";
 import WalletConnectModal from "@/components/ui/WalletConnectModal";
+import RewardsWidget from "@/components/RewardsWidget";
 import chopchainLogo from "@/assets/chopchain-logo.png";
 import { useWallet } from "@/hooks/useWallet";
 import { useVendorRegistry } from "@/hooks/useVendorRegistry";
@@ -107,47 +108,58 @@ export default function FoodBrowsing() {
               </Badge>
             </div>
 
-            <div className="flex items-center space-x-3">
-              <div className="flex items-center text-sm text-muted-foreground">
-                <MapPin className="w-4 h-4 mr-1" />
-                Lagos, NG
-              </div>
-              
-              {/* Vendor Button */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleVendorAction}
-                className="hidden md:flex items-center space-x-2 rounded-xl border-primary/20 hover:bg-primary/5"
-              >
-                <Store className="w-4 h-4" />
-                <span>{connected && isVendor ? "Dashboard" : "Become Vendor"}</span>
-              </Button>
+                                <div className="flex items-center space-x-3">
+                      <div className="flex items-center text-sm text-muted-foreground">
+                        <MapPin className="w-4 h-4 mr-1" />
+                        Lagos, NG
+                      </div>
+                      
+                      {/* Rewards Button */}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => navigate('/rewards')}
+                        className="hidden md:flex items-center space-x-2 rounded-xl border-accent/20 hover:bg-accent/5"
+                      >
+                        <Gift className="w-4 h-4" />
+                        <span>Rewards</span>
+                      </Button>
+                      
+                      {/* Vendor Button */}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleVendorAction}
+                        className="hidden md:flex items-center space-x-2 rounded-xl border-primary/20 hover:bg-primary/5"
+                      >
+                        <Store className="w-4 h-4" />
+                        <span>{connected && isVendor ? "Dashboard" : "Become Vendor"}</span>
+                      </Button>
 
-              {/* Delivery Agent Button */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleDeliveryAgentAction}
-                className="hidden lg:flex items-center space-x-2 rounded-xl border-secondary/20 hover:bg-secondary/5"
-              >
-                <Truck className="w-4 h-4" />
-                <span>{connected && isDeliveryAgent ? "Agent Dashboard" : "Deliver Food"}</span>
-              </Button>
+                      {/* Delivery Agent Button */}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleDeliveryAgentAction}
+                        className="hidden lg:flex items-center space-x-2 rounded-xl border-secondary/20 hover:bg-secondary/5"
+                      >
+                        <Truck className="w-4 h-4" />
+                        <span>{connected && isDeliveryAgent ? "Agent Dashboard" : "Deliver Food"}</span>
+                      </Button>
 
-              {connected ? (
-                <Button
-                  className="bg-gradient-trust text-primary-foreground"
-                  onClick={disconnect}
-                >
-                  {shortAddress}
-                </Button>
-              ) : (
-                <Button className="bg-gradient-sunset hover:shadow-glow" onClick={() => setWalletModalOpen(true)}>
-                  Connect Wallet
-                </Button>
-              )}
-            </div>
+                      {connected ? (
+                        <Button
+                          className="bg-gradient-trust text-primary-foreground"
+                          onClick={disconnect}
+                        >
+                          {shortAddress}
+                        </Button>
+                      ) : (
+                        <Button className="bg-gradient-sunset hover:shadow-glow" onClick={() => setWalletModalOpen(true)}>
+                          Connect Wallet
+                        </Button>
+                      )}
+                    </div>
           </div>
 
           {/* Search bar */}
@@ -249,52 +261,70 @@ export default function FoodBrowsing() {
           </div>
         </section>
 
-        {/* Earn with ChopChain Banner */}
-        <section className="mb-8">
-          <Card className="rounded-2xl bg-gradient-to-br from-secondary/10 to-accent/10 border-secondary/20">
-            <div className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <h3 className="text-xl font-bold text-foreground">Earn with ChopChain</h3>
-                  <p className="text-muted-foreground">
-                    Join our delivery network and start earning money while helping your community
-                  </p>
-                  <div className="flex items-center space-x-4 text-sm">
-                    <div className="flex items-center space-x-1">
-                      <Truck className="w-4 h-4 text-secondary" />
-                      <span>Flexible hours</span>
+                    {/* CHOP Rewards Widget */}
+            <section className="mb-8">
+              <RewardsWidget 
+                compact={true}
+                showProgress={false}
+                showActions={true}
+                className="max-w-md mx-auto lg:max-w-none"
+              />
+            </section>
+
+            {/* Earn with ChopChain Banner */}
+            <section className="mb-8">
+              <Card className="rounded-2xl bg-gradient-to-br from-secondary/10 to-accent/10 border-secondary/20">
+                <div className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-2">
+                      <h3 className="text-xl font-bold text-foreground">Earn with ChopChain</h3>
+                      <p className="text-muted-foreground">
+                        Join our delivery network and start earning money while helping your community
+                      </p>
+                      <div className="flex items-center space-x-4 text-sm">
+                        <div className="flex items-center space-x-1">
+                          <Truck className="w-4 h-4 text-secondary" />
+                          <span>Flexible hours</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <Star className="w-4 h-4 text-accent" />
+                          <span>Build reputation</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <Zap className="w-4 h-4 text-primary" />
+                          <span>Earn CHOP tokens</span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex items-center space-x-1">
-                      <Star className="w-4 h-4 text-accent" />
-                      <span>Build reputation</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <Zap className="w-4 h-4 text-primary" />
-                      <span>Earn CHOP tokens</span>
+                    <div className="flex flex-col space-y-2">
+                      <Button
+                        onClick={handleDeliveryAgentAction}
+                        className="bg-gradient-trust hover:shadow-glow"
+                      >
+                        <Truck className="w-4 h-4 mr-2" />
+                        {connected && isDeliveryAgent ? "Agent Dashboard" : "Become Delivery Agent"}
+                      </Button>
+                      <Button
+                        onClick={handleVendorAction}
+                        variant="outline"
+                        className="border-primary/20 hover:bg-primary/5"
+                      >
+                        <Store className="w-4 h-4 mr-2" />
+                        {connected && isVendor ? "Vendor Dashboard" : "Sell Food"}
+                      </Button>
+                      <Button
+                        onClick={() => navigate('/earn')}
+                        variant="outline"
+                        className="border-accent/20 hover:bg-accent/5"
+                      >
+                        <Gift className="w-4 h-4 mr-2" />
+                        Earn More CHOP
+                      </Button>
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col space-y-2">
-                  <Button
-                    onClick={handleDeliveryAgentAction}
-                    className="bg-gradient-trust hover:shadow-glow"
-                  >
-                    <Truck className="w-4 h-4 mr-2" />
-                    {connected && isDeliveryAgent ? "Agent Dashboard" : "Become Delivery Agent"}
-                  </Button>
-                  <Button
-                    onClick={handleVendorAction}
-                    variant="outline"
-                    className="border-primary/20 hover:bg-primary/5"
-                  >
-                    <Store className="w-4 h-4 mr-2" />
-                    {connected && isVendor ? "Vendor Dashboard" : "Sell Food"}
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </Card>
-        </section>
+              </Card>
+            </section>
       </main>
     </div>
   );
