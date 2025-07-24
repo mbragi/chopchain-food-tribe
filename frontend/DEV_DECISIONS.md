@@ -1,6 +1,6 @@
 # DEV_DECISIONS.md
 
-## [2024-01-15] Smart Contract Integration & Vendor Dashboard Implementation
+## [2025-07-15] Smart Contract Integration & Vendor Dashboard Implementation
 
 ### Why
 
@@ -71,7 +71,7 @@
 
 ---
 
-## [2024-06-07] Initial Mock Integration
+## [2025-07-07] Initial Mock Integration
 
 ### Why
 
