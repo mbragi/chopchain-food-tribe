@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { useWallet } from "@/hooks/useWallet"; 
 import { useRewards } from "@/hooks/useRewards";
 import { useCurrency } from "@/hooks/useCurrency";
+import { useEnhancedCheckout } from "@/hooks/useEnhancedCheckout";
 import { useNavigate } from "react-router-dom";
 import WalletConnectModal from "@/components/ui/WalletConnectModal";
 import RewardsWidget from "@/components/RewardsWidget";
@@ -43,6 +44,12 @@ export default function Cart() {
     fetchExchangeRates,
     isLoading: currencyLoading
   } = useCurrency();
+
+  const {
+    checkoutState,
+    processCheckout,
+    balances
+  } = useEnhancedCheckout();
   
   const [walletModalOpen, setWalletModalOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([
@@ -91,13 +98,35 @@ export default function Cart() {
     return amount.toFixed(1);
   };
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     if (!connected) {
       setWalletModalOpen(true);
       return;
     }
-    // Navigate to order confirmation
-    navigate('/order-confirmation');
+    
+    // Mock vendor address - in production, this would come from the vendor data
+    const vendorAddress = '0x742d35Cc6C4e8e37C9Fd5Bf5f54e61b7e3b2B2A1';
+    const deliveryAddress = 'Block 5, Apartment 3B, Victoria Island, Lagos';
+    
+    const orderItems = cartItems.map(item => ({
+      name: item.name,
+      priceUsdt: item.priceUsdt,
+      quantity: item.quantity,
+      vendor: item.vendor
+    }));
+
+    const result = await processCheckout(orderItems, deliveryAddress, vendorAddress);
+    
+    if (result.success) {
+      // Navigate to order confirmation with order ID
+      navigate('/order-confirmation', { 
+        state: { 
+          orderId: result.orderId,
+          transactionHash: checkoutState.transactionHash 
+        }
+      });
+    }
+    // Error handling is done in the hook with toast notifications
   };
 
   if (cartItems.length === 0) {
@@ -396,8 +425,16 @@ export default function Cart() {
                  <Button 
                    className="w-full h-12 bg-gradient-sunset hover:shadow-glow text-lg font-semibold"
                    onClick={handlePlaceOrder}
+                   disabled={checkoutState.isProcessing || !connected}
                  >
-                   {connected ? (
+                   {checkoutState.isProcessing ? (
+                     <>
+                       <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
+                       {checkoutState.currentStep === 'approval' && 'Approving USDT...'}
+                       {checkoutState.currentStep === 'placing' && 'Placing Order...'}
+                       {checkoutState.currentStep === 'confirming' && 'Confirming...'}
+                     </>
+                   ) : connected ? (
                      <>
                        <CreditCard className="w-5 h-5 mr-2" />
                        Place Order • {priceBreakdown.payment.formatted}

@@ -19,6 +19,7 @@ import { useRewards } from "@/hooks/useRewards";
 import VendorProfile from "@/components/VendorProfile";
 import OrderManagement from "@/components/OrderManagement";
 import VendorAnalytics from "@/components/VendorAnalytics";
+import VendorOffRamp from "@/components/VendorOffRamp";
 
 export default function VendorDashboard() {
   const { address } = useWallet();
@@ -67,7 +68,7 @@ export default function VendorDashboard() {
 
       <div className="container mx-auto px-4 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:grid-cols-5">
             <TabsTrigger value="overview" className="flex items-center space-x-2">
               <BarChart3 className="w-4 h-4" />
               <span>Overview</span>
@@ -75,6 +76,10 @@ export default function VendorDashboard() {
             <TabsTrigger value="orders" className="flex items-center space-x-2">
               <Package className="w-4 h-4" />
               <span>Orders</span>
+            </TabsTrigger>
+            <TabsTrigger value="wallet" className="flex items-center space-x-2">
+              <Wallet className="w-4 h-4" />
+              <span>Wallet</span>
             </TabsTrigger>
             <TabsTrigger value="profile" className="flex items-center space-x-2">
               <Store className="w-4 h-4" />
@@ -198,6 +203,10 @@ export default function VendorDashboard() {
 
           <TabsContent value="orders">
             <OrderManagement />
+          </TabsContent>
+
+          <TabsContent value="wallet">
+            <VendorOffRamp />
           </TabsContent>
 
           <TabsContent value="profile">
