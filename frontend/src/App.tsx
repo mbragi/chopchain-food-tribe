@@ -16,6 +16,8 @@ import DeliveryAgentRegistration from "./pages/DeliveryAgentRegistration";
 import ProtectedVendorRoute from "./components/ProtectedVendorRoute";
 import ProtectedDeliveryAgentRoute from "./components/ProtectedDeliveryAgentRoute";
 import NotFound from "./pages/NotFound";
+import FoodBrowsing from "./components/FoodBrowsing";
+import OnboardingFlow from "./components/OnboardingFlow";
 import { ThirdwebProvider } from "@thirdweb-dev/react";
 import { supportedChains, Base } from "@/constants/chains";
 
@@ -42,9 +44,15 @@ const App = () => (
                             <Routes>
                     {/* Public Routes */}
                     <Route path="/" element={<Index />} />
+                    <Route path="/browse" element={<FoodBrowsing />} />
                     <Route path="/vendor-details" element={<VendorDetails />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/order-confirmation" element={<OrderConfirmation />} />
+                    
+                    {/* Onboarding Routes */}
+                    <Route path="/onboarding/customer" element={<OnboardingFlow userType="customer" />} />
+                    <Route path="/onboarding/vendor" element={<OnboardingFlow userType="vendor" />} />
+                    <Route path="/onboarding/delivery-agent" element={<OnboardingFlow userType="delivery_agent" />} />
                     
                     {/* Rewards Routes */}
                     <Route path="/rewards" element={<Rewards />} />

@@ -25,6 +25,7 @@ import { useWallet } from "@/hooks/useWallet";
 import { useVendorRegistry } from "@/hooks/useVendorRegistry"; 
 import { useDeliveryAgentRegistry } from "@/hooks/useDeliveryAgentRegistry";
 import { useCurrency } from "@/hooks/useCurrency";
+import { useUserOnboarding } from "@/hooks/useUserOnboarding";
 import { useNavigate } from "react-router-dom";
 
 const categories = [
@@ -79,6 +80,7 @@ export default function FoodBrowsing() {
   const { isVendor } = useVendorRegistry();
   const { isDeliveryAgent } = useDeliveryAgentRegistry();
   const { getDisplayPrice } = useCurrency();
+  const { resetOnboarding } = useUserOnboarding();
 
   const shortAddress = address ? address.slice(0, 6) + "..." + address.slice(-4) : "";
 
@@ -124,10 +126,18 @@ export default function FoodBrowsing() {
             </div>
 
                                 <div className="flex items-center space-x-3">
-                      <div className="flex items-center text-sm text-muted-foreground">
-                        <MapPin className="w-4 h-4 mr-1" />
-                        Lagos, NG
-                      </div>
+                                        <div className="flex items-center text-sm text-muted-foreground">
+                    <MapPin className="w-4 h-4 mr-1" />
+                    Lagos, NG
+                  </div>
+                  
+                  {/* Reset Onboarding - For demo purposes */}
+                  <button
+                    onClick={resetOnboarding}
+                    className="text-xs text-muted-foreground hover:text-primary transition-colors underline"
+                  >
+                    Reset Tutorial
+                  </button>
                       
                       {/* Rewards Button */}
                       <Button
