@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, MapPin, Star, Clock, Zap, Store } from "lucide-react";
+import { Search, MapPin, Star, Clock, Zap, Store, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -9,45 +9,49 @@ import WalletConnectModal from "@/components/ui/WalletConnectModal";
 import chopchainLogo from "@/assets/chopchain-logo.png";
 import { useWallet } from "@/hooks/useWallet";
 import { useVendorRegistry } from "@/hooks/useVendorRegistry";
+import { useDeliveryAgentRegistry } from "@/hooks/useDeliveryAgentRegistry";
 import { useNavigate } from "react-router-dom";
 
 const categories = [
-  "All", "Jollof", "Soups", "Snacks", "Rice", "Protein", "Swallow", "Drinks"
+  "All", "Nigerian", "Continental", "Chinese", "Indian", "Italian", "Fast Food", "Healthy", "Desserts"
 ];
 
 const featuredVendors: Vendor[] = [
   {
-    id: 1,
-    name: "Mama Temi's Kitchen",
+    id: "1",
+    name: "Mama's Kitchen",
+    cuisine: "Nigerian",
     rating: 4.8,
     deliveryTime: "25-35 min",
-    category: "Traditional",
-    image: "/placeholder.svg",
-    specialties: ["Jollof Rice", "Pepper Soup"],
-    priceRange: "$",
-    isOpen: true
+    deliveryFee: 2.50,
+    image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=200&fit=crop",
+    isOpen: true,
+    featured: true,
+    distance: 0.8
   },
   {
-    id: 2,
-    name: "Chop Life Lagos",
+    id: "2", 
+    name: "Urban Grill",
+    cuisine: "Continental",
     rating: 4.6,
-    deliveryTime: "15-25 min",
-    category: "Fast Food",
-    image: "/placeholder.svg",
-    specialties: ["Shawarma", "Suya"],
-    priceRange: "$$",
-    isOpen: true
+    deliveryTime: "30-40 min",
+    deliveryFee: 3.00,
+    image: "https://images.unsplash.com/photo-1551218808-94e220e084d2?w=300&h=200&fit=crop",
+    isOpen: true,
+    featured: true,
+    distance: 1.2
   },
   {
-    id: 3,
-    name: "Abuja Delight",
-    rating: 4.9,
-    deliveryTime: "30-40 min",
-    category: "Premium",
-    image: "/placeholder.svg",
-    specialties: ["Egusi", "Pounded Yam"],
-    priceRange: "$$$",
-    isOpen: false
+    id: "3",
+    name: "Dragon Palace",
+    cuisine: "Chinese", 
+    rating: 4.7,
+    deliveryTime: "20-30 min",
+    deliveryFee: 2.00,
+    image: "https://images.unsplash.com/photo-1563379091339-03246963d19b?w=300&h=200&fit=crop",
+    isOpen: false,
+    featured: true,
+    distance: 2.1
   }
 ];
 
@@ -58,6 +62,7 @@ export default function FoodBrowsing() {
   const [walletModalOpen, setWalletModalOpen] = useState(false);
   const { connected, address, disconnect } = useWallet();
   const { isVendor } = useVendorRegistry();
+  const { isDeliveryAgent } = useDeliveryAgentRegistry();
 
   const shortAddress = address ? address.slice(0, 6) + "..." + address.slice(-4) : "";
 
@@ -71,6 +76,19 @@ export default function FoodBrowsing() {
       navigate("/vendor/dashboard");
     } else {
       navigate("/vendor/register");
+    }
+  };
+
+  const handleDeliveryAgentAction = () => {
+    if (!connected) {
+      setWalletModalOpen(true);
+      return;
+    }
+    
+    if (isDeliveryAgent) {
+      navigate("/delivery-agent/dashboard");
+    } else {
+      navigate("/delivery-agent/register");
     }
   };
 
@@ -104,6 +122,17 @@ export default function FoodBrowsing() {
               >
                 <Store className="w-4 h-4" />
                 <span>{connected && isVendor ? "Dashboard" : "Become Vendor"}</span>
+              </Button>
+
+              {/* Delivery Agent Button */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleDeliveryAgentAction}
+                className="hidden lg:flex items-center space-x-2 rounded-xl border-secondary/20 hover:bg-secondary/5"
+              >
+                <Truck className="w-4 h-4" />
+                <span>{connected && isDeliveryAgent ? "Agent Dashboard" : "Deliver Food"}</span>
               </Button>
 
               {connected ? (
@@ -218,6 +247,53 @@ export default function FoodBrowsing() {
               </p>
             </Card>
           </div>
+        </section>
+
+        {/* Earn with ChopChain Banner */}
+        <section className="mb-8">
+          <Card className="rounded-2xl bg-gradient-to-br from-secondary/10 to-accent/10 border-secondary/20">
+            <div className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <h3 className="text-xl font-bold text-foreground">Earn with ChopChain</h3>
+                  <p className="text-muted-foreground">
+                    Join our delivery network and start earning money while helping your community
+                  </p>
+                  <div className="flex items-center space-x-4 text-sm">
+                    <div className="flex items-center space-x-1">
+                      <Truck className="w-4 h-4 text-secondary" />
+                      <span>Flexible hours</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <Star className="w-4 h-4 text-accent" />
+                      <span>Build reputation</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <Zap className="w-4 h-4 text-primary" />
+                      <span>Earn CHOP tokens</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-col space-y-2">
+                  <Button
+                    onClick={handleDeliveryAgentAction}
+                    className="bg-gradient-trust hover:shadow-glow"
+                  >
+                    <Truck className="w-4 h-4 mr-2" />
+                    {connected && isDeliveryAgent ? "Agent Dashboard" : "Become Delivery Agent"}
+                  </Button>
+                  <Button
+                    onClick={handleVendorAction}
+                    variant="outline"
+                    className="border-primary/20 hover:bg-primary/5"
+                  >
+                    <Store className="w-4 h-4 mr-2" />
+                    {connected && isVendor ? "Vendor Dashboard" : "Sell Food"}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </Card>
         </section>
       </main>
     </div>

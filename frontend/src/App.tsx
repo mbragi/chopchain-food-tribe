@@ -9,7 +9,10 @@ import Cart from "./pages/Cart";
 import OrderConfirmation from "./pages/OrderConfirmation";
 import VendorDashboard from "./pages/VendorDashboard";
 import VendorRegistration from "./pages/VendorRegistration";
+import DeliveryAgentDashboard from "./pages/DeliveryAgentDashboard";
+import DeliveryAgentRegistration from "./pages/DeliveryAgentRegistration";
 import ProtectedVendorRoute from "./components/ProtectedVendorRoute";
+import ProtectedDeliveryAgentRoute from "./components/ProtectedDeliveryAgentRoute";
 import NotFound from "./pages/NotFound";
 import { ThirdwebProvider } from "@thirdweb-dev/react";
 import { supportedChains, Base } from "@/constants/chains";
@@ -49,6 +52,17 @@ const App = () => (
                 <ProtectedVendorRoute>
                   <VendorDashboard />
                 </ProtectedVendorRoute>
+              } 
+            />
+            
+            {/* Delivery Agent Routes */}
+            <Route path="/delivery-agent/register" element={<DeliveryAgentRegistration />} />
+            <Route 
+              path="/delivery-agent/dashboard" 
+              element={
+                <ProtectedDeliveryAgentRoute>
+                  <DeliveryAgentDashboard />
+                </ProtectedDeliveryAgentRoute>
               } 
             />
             
