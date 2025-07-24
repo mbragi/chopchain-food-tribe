@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Minus, Plus, ShoppingCart, CreditCard, Shield, Clock, Zap, Star, Gift } from "lucide-react";
+import { Minus, Plus, ShoppingCart, CreditCard, Shield, Clock, Zap, Star, Gift, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useWallet } from "@/hooks/useWallet"; 
 import { useRewards } from "@/hooks/useRewards";
+import { useCurrency } from "@/hooks/useCurrency";
 import { useNavigate } from "react-router-dom";
 import WalletConnectModal from "@/components/ui/WalletConnectModal";
 import RewardsWidget from "@/components/RewardsWidget";
@@ -13,7 +14,7 @@ import RewardsWidget from "@/components/RewardsWidget";
 interface CartItem {
   id: string;
   name: string;
-  price: number;
+  priceUsdt: number; // Base price in USDT
   quantity: number;
   vendor: string;
   image: string;
@@ -32,12 +33,23 @@ export default function Cart() {
     getRewardMultiplier
   } = useRewards();
   
+  const {
+    exchangeRates,
+    formatNGN,
+    formatUSDT,
+    getDisplayPrice,
+    getPriceBreakdown,
+    areRatesStale,
+    fetchExchangeRates,
+    isLoading: currencyLoading
+  } = useCurrency();
+  
   const [walletModalOpen, setWalletModalOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([
     {
       id: "1",
       name: "Jollof Rice with Chicken",
-      price: 12.50,
+      priceUsdt: 7.58, // ~₦12,500 at current rate
       quantity: 2,
       vendor: "Mama's Kitchen",
       image: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=100&h=100&fit=crop",
@@ -46,7 +58,7 @@ export default function Cart() {
     {
       id: "2", 
       name: "Grilled Fish with Plantain",
-      price: 15.00,
+      priceUsdt: 9.09, // ~₦15,000 at current rate
       quantity: 1,
       vendor: "Mama's Kitchen",
       image: "https://images.unsplash.com/photo-1544943342-0c3d1b5e7e21?w=100&h=100&fit=crop"
@@ -63,13 +75,13 @@ export default function Cart() {
     );
   };
 
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const deliveryFee = 2.50;
-  const serviceFee = 1.25;
-  const total = subtotal + deliveryFee + serviceFee;
+  // Calculate prices using currency system
+  const priceBreakdown = getPriceBreakdown(
+    cartItems.map(item => ({ price: item.priceUsdt, quantity: item.quantity }))
+  );
 
-  // Calculate CHOP rewards (5% of total)
-  const baseRewardAmount = total * 0.05;
+  // Calculate CHOP rewards (5% of total USDT amount)
+  const baseRewardAmount = priceBreakdown.total.usdt * 0.05;
   const actualRewardAmount = baseRewardAmount * (rewardsConnected ? rewardMultiplier : 1);
   
   const formatTokens = (amount: number): string => {
@@ -183,10 +195,14 @@ export default function Cart() {
                           <Plus className="w-4 h-4" />
                         </Button>
                       </div>
-                      <div className="text-right min-w-[80px]">
-                        <p className="font-bold text-foreground">${(item.price * item.quantity).toFixed(2)}</p>
-                        <p className="text-sm text-muted-foreground">${item.price.toFixed(2)} each</p>
-                      </div>
+                                             <div className="text-right min-w-[100px]">
+                         <p className="font-bold text-foreground">
+                           {getDisplayPrice(item.priceUsdt * item.quantity).display}
+                         </p>
+                         <p className="text-sm text-muted-foreground">
+                           {getDisplayPrice(item.priceUsdt).display} each
+                         </p>
+                       </div>
                     </div>
                   </div>
                 ))}
@@ -291,32 +307,57 @@ export default function Cart() {
               className="lg:block hidden"
             />
 
-            {/* Order Summary */}
-            <Card className="rounded-2xl border-border sticky top-6">
-              <CardHeader>
-                <CardTitle>Order Summary</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Subtotal</span>
-                    <span className="font-medium">${subtotal.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Delivery Fee</span>
-                    <span className="font-medium">${deliveryFee.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Service Fee</span>
-                    <span className="font-medium">${serviceFee.toFixed(2)}</span>
-                  </div>
-                  
-                  <Separator />
-                  
-                  <div className="flex justify-between text-lg font-bold">
-                    <span>Total</span>
-                    <span>${total.toFixed(2)}</span>
-                  </div>
+                         {/* Order Summary */}
+             <Card className="rounded-2xl border-border sticky top-6">
+               <CardHeader className="flex flex-row items-center justify-between">
+                 <CardTitle>Order Summary</CardTitle>
+                 {areRatesStale && (
+                   <Button
+                     variant="outline"
+                     size="sm"
+                     onClick={fetchExchangeRates}
+                     disabled={currencyLoading}
+                     className="h-8 px-2"
+                   >
+                     <RefreshCw className={`w-3 h-3 ${currencyLoading ? 'animate-spin' : ''}`} />
+                   </Button>
+                 )}
+               </CardHeader>
+               <CardContent className="space-y-4">
+                 <div className="space-y-3">
+                   <div className="flex justify-between">
+                     <span className="text-muted-foreground">Subtotal</span>
+                     <span className="font-medium">{priceBreakdown.subtotal.display}</span>
+                   </div>
+                   <div className="flex justify-between">
+                     <span className="text-muted-foreground">Delivery Fee</span>
+                     <span className="font-medium">{priceBreakdown.deliveryFee.display}</span>
+                   </div>
+                   <div className="flex justify-between">
+                     <span className="text-muted-foreground">Service Fee</span>
+                     <span className="font-medium">{priceBreakdown.serviceFee.display}</span>
+                   </div>
+                   
+                   <Separator />
+                   
+                   <div className="flex justify-between text-lg font-bold">
+                     <span>Total</span>
+                     <span>{priceBreakdown.total.display}</span>
+                   </div>
+
+                   {/* Payment Amount in USDT */}
+                   <div className="bg-muted/30 rounded-xl p-3">
+                     <div className="flex justify-between items-center">
+                       <span className="text-sm font-medium text-foreground">You'll pay</span>
+                       <span className="font-bold text-primary">{priceBreakdown.payment.formatted}</span>
+                     </div>
+                     <div className="flex justify-between items-center mt-1">
+                       <span className="text-xs text-muted-foreground">Exchange rate</span>
+                       <span className="text-xs text-muted-foreground">
+                         1 USDT = ₦{priceBreakdown.exchangeRate.toLocaleString()}
+                       </span>
+                     </div>
+                   </div>
 
                   {/* Rewards Earning Summary */}
                   {connected && rewardsConnected && (
@@ -342,27 +383,31 @@ export default function Cart() {
                     <Shield className="w-4 h-4" />
                     <span>Escrow protection active</span>
                   </div>
-                  <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                    <CreditCard className="w-4 h-4" />
-                    <span>Paying with USDT</span>
-                  </div>
-                </div>
+                                     <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                     <CreditCard className="w-4 h-4" />
+                     <span>Paying with USDT</span>
+                   </div>
+                   <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                     <span className="w-4 h-4 text-center">₦</span>
+                     <span>Prices shown in NGN</span>
+                   </div>
+                 </div>
 
-                <Button 
-                  className="w-full h-12 bg-gradient-sunset hover:shadow-glow text-lg font-semibold"
-                  onClick={handlePlaceOrder}
-                >
-                  {connected ? (
-                    <>
-                      <CreditCard className="w-5 h-5 mr-2" />
-                      Place Order • ${total.toFixed(2)}
-                    </>
-                  ) : (
-                    <>
-                      Connect Wallet to Order
-                    </>
-                  )}
-                </Button>
+                 <Button 
+                   className="w-full h-12 bg-gradient-sunset hover:shadow-glow text-lg font-semibold"
+                   onClick={handlePlaceOrder}
+                 >
+                   {connected ? (
+                     <>
+                       <CreditCard className="w-5 h-5 mr-2" />
+                       Place Order • {priceBreakdown.payment.formatted}
+                     </>
+                   ) : (
+                     <>
+                       Connect Wallet to Order
+                     </>
+                   )}
+                 </Button>
 
                 {!connected && (
                   <p className="text-xs text-muted-foreground text-center">

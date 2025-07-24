@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { useNavigate } from "react-router-dom";
 import { useWallet } from "@/hooks/useWallet";
 import { useRewards } from "@/hooks/useRewards";
+import { useCurrency } from "@/hooks/useCurrency";
 import RewardsWidget from "@/components/RewardsWidget";
 
 export default function OrderConfirmation() {
@@ -22,27 +23,30 @@ export default function OrderConfirmation() {
     refetchBalance
   } = useRewards();
 
+  const { getDisplayPrice, getPriceBreakdown } = useCurrency();
+
   const [showRewardAnimation, setShowRewardAnimation] = useState(false);
   const [rewardsEarned, setRewardsEarned] = useState(0);
 
-  // Mock order data
+  // Mock order data with USDT prices
+  const orderItems = [
+    { name: "Jollof Rice with Chicken", quantity: 2, price: 7.58 }, // USDT price
+    { name: "Grilled Fish with Plantain", quantity: 1, price: 9.09 } // USDT price
+  ];
+
+  const priceBreakdown = getPriceBreakdown(orderItems);
+
   const orderData = {
     orderId: "CHOPv2-" + Math.random().toString(36).substr(2, 9).toUpperCase(),
     vendor: "Mama's Kitchen",
-    items: [
-      { name: "Jollof Rice with Chicken", quantity: 2, price: 12.50 },
-      { name: "Grilled Fish with Plantain", quantity: 1, price: 15.00 }
-    ],
-    subtotal: 40.00,
-    deliveryFee: 2.50,
-    serviceFee: 1.25,
-    total: 43.75,
+    items: orderItems,
+    priceBreakdown,
     estimatedDelivery: "25-35 minutes",
     deliveryAddress: "Block 5, Apartment 3B, Victoria Island, Lagos"
   };
 
-  // Calculate rewards earned (5% of total)
-  const baseRewardAmount = orderData.total * 0.05;
+  // Calculate rewards earned (5% of total USDT amount)
+  const baseRewardAmount = orderData.priceBreakdown.total.usdt * 0.05;
   const actualRewardAmount = baseRewardAmount * (rewardsConnected ? rewardMultiplier : 1);
 
   const formatTokens = (amount: number): string => {
@@ -240,39 +244,57 @@ export default function OrderConfirmation() {
                 <CardTitle>Order Details</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-foreground">{orderData.vendor}</h3>
-                  {orderData.items.map((item, index) => (
-                    <div key={index} className="flex justify-between">
-                      <span className="text-muted-foreground">
-                        {item.quantity}x {item.name}
-                      </span>
-                      <span className="font-medium">${(item.price * item.quantity).toFixed(2)}</span>
-                    </div>
-                  ))}
-                  
-                  <Separator />
-                  
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Subtotal</span>
-                      <span>${orderData.subtotal.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Delivery Fee</span>
-                      <span>${orderData.deliveryFee.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Service Fee</span>
-                      <span>${orderData.serviceFee.toFixed(2)}</span>
-                    </div>
-                    <Separator />
-                    <div className="flex justify-between text-lg font-bold">
-                      <span>Total</span>
-                      <span>${orderData.total.toFixed(2)}</span>
-                    </div>
-                  </div>
-                </div>
+                                 <div className="space-y-3">
+                   <h3 className="font-semibold text-foreground">{orderData.vendor}</h3>
+                   {orderData.items.map((item, index) => (
+                     <div key={index} className="flex justify-between">
+                       <span className="text-muted-foreground">
+                         {item.quantity}x {item.name}
+                       </span>
+                       <span className="font-medium">
+                         {getDisplayPrice(item.price * item.quantity).display}
+                       </span>
+                     </div>
+                   ))}
+                   
+                   <Separator />
+                   
+                   <div className="space-y-2">
+                     <div className="flex justify-between">
+                       <span className="text-muted-foreground">Subtotal</span>
+                       <span>{orderData.priceBreakdown.subtotal.display}</span>
+                     </div>
+                     <div className="flex justify-between">
+                       <span className="text-muted-foreground">Delivery Fee</span>
+                       <span>{orderData.priceBreakdown.deliveryFee.display}</span>
+                     </div>
+                     <div className="flex justify-between">
+                       <span className="text-muted-foreground">Service Fee</span>
+                       <span>{orderData.priceBreakdown.serviceFee.display}</span>
+                     </div>
+                     <Separator />
+                     <div className="flex justify-between text-lg font-bold">
+                       <span>Total</span>
+                       <span>{orderData.priceBreakdown.total.display}</span>
+                     </div>
+                     
+                     {/* Payment amount */}
+                     <div className="bg-muted/30 rounded-xl p-3 mt-3">
+                       <div className="flex justify-between items-center">
+                         <span className="text-sm text-muted-foreground">Paid with</span>
+                         <span className="font-medium text-primary">
+                           {orderData.priceBreakdown.payment.formatted}
+                         </span>
+                       </div>
+                       <div className="flex justify-between items-center mt-1">
+                         <span className="text-xs text-muted-foreground">Exchange rate</span>
+                         <span className="text-xs text-muted-foreground">
+                           1 USDT = ₦{orderData.priceBreakdown.exchangeRate.toLocaleString()}
+                         </span>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
 
                 <div className="bg-muted/30 rounded-xl p-4">
                   <div className="flex items-center space-x-2 mb-2">

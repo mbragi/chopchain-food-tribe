@@ -4,13 +4,27 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { VendorCard, Vendor } from "@/components/VendorCard";
+import { VendorCard } from "@/components/VendorCard";
+
+interface Vendor {
+  id: string;
+  name: string;
+  cuisine: string;
+  rating: number;
+  deliveryTime: string;
+  deliveryFee: number; // in USDT
+  image: string;
+  isOpen: boolean;
+  featured: boolean;
+  distance: number;
+}
 import WalletConnectModal from "@/components/ui/WalletConnectModal";
 import RewardsWidget from "@/components/RewardsWidget";
 import chopchainLogo from "@/assets/chopchain-logo.png";
 import { useWallet } from "@/hooks/useWallet";
-import { useVendorRegistry } from "@/hooks/useVendorRegistry";
+import { useVendorRegistry } from "@/hooks/useVendorRegistry"; 
 import { useDeliveryAgentRegistry } from "@/hooks/useDeliveryAgentRegistry";
+import { useCurrency } from "@/hooks/useCurrency";
 import { useNavigate } from "react-router-dom";
 
 const categories = [
@@ -21,10 +35,10 @@ const featuredVendors: Vendor[] = [
   {
     id: "1",
     name: "Mama's Kitchen",
-    cuisine: "Nigerian",
+    cuisine: "Nigerian", 
     rating: 4.8,
     deliveryTime: "25-35 min",
-    deliveryFee: 2.50,
+    deliveryFee: 1.52, // ₦2,500 in USDT
     image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=200&fit=crop",
     isOpen: true,
     featured: true,
@@ -35,8 +49,8 @@ const featuredVendors: Vendor[] = [
     name: "Urban Grill",
     cuisine: "Continental",
     rating: 4.6,
-    deliveryTime: "30-40 min",
-    deliveryFee: 3.00,
+    deliveryTime: "30-40 min", 
+    deliveryFee: 1.82, // ₦3,000 in USDT
     image: "https://images.unsplash.com/photo-1551218808-94e220e084d2?w=300&h=200&fit=crop",
     isOpen: true,
     featured: true,
@@ -48,7 +62,7 @@ const featuredVendors: Vendor[] = [
     cuisine: "Chinese", 
     rating: 4.7,
     deliveryTime: "20-30 min",
-    deliveryFee: 2.00,
+    deliveryFee: 1.21, // ₦2,000 in USDT
     image: "https://images.unsplash.com/photo-1563379091339-03246963d19b?w=300&h=200&fit=crop",
     isOpen: false,
     featured: true,
@@ -64,6 +78,7 @@ export default function FoodBrowsing() {
   const { connected, address, disconnect } = useWallet();
   const { isVendor } = useVendorRegistry();
   const { isDeliveryAgent } = useDeliveryAgentRegistry();
+  const { getDisplayPrice } = useCurrency();
 
   const shortAddress = address ? address.slice(0, 6) + "..." + address.slice(-4) : "";
 
@@ -205,16 +220,70 @@ export default function FoodBrowsing() {
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredVendors.map((vendor) => (
-              <VendorCard
-                key={vendor.id}
-                vendor={vendor}
-                onClick={() => window.location.href = '/vendor-details'}
-                disabled={!vendor.isOpen}
-              />
-            ))}
-          </div>
+                           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                   {featuredVendors.map((vendor) => {
+                     const deliveryFeeDisplay = getDisplayPrice(vendor.deliveryFee);
+                     
+                     return (
+                       <Card
+                         key={vendor.id}
+                         className="overflow-hidden hover:shadow-card-hover transition-all duration-300 cursor-pointer rounded-2xl border-border"
+                         onClick={() => window.location.href = '/vendor-details'}
+                       >
+                         <div className="relative">
+                           <img 
+                             src={vendor.image} 
+                             alt={vendor.name}
+                             className="h-48 w-full object-cover"
+                           />
+                           <Badge
+                             className={`absolute top-3 right-3 ${vendor.isOpen
+                               ? "bg-secondary text-secondary-foreground"
+                               : "bg-muted text-muted-foreground"
+                             }`}
+                           >
+                             {vendor.isOpen ? "Open" : "Closed"}
+                           </Badge>
+                           <Badge className="absolute top-3 left-3 bg-background/90 text-foreground">
+                             {deliveryFeeDisplay.display} delivery
+                           </Badge>
+                         </div>
+                         <div className="p-4">
+                           <div className="flex items-start justify-between mb-2">
+                             <h3 className="font-semibold text-lg text-foreground">
+                               {vendor.name}
+                             </h3>
+                             <div className="flex items-center space-x-1">
+                               <Star className="w-4 h-4 fill-accent text-accent" />
+                               <span className="text-sm font-medium">{vendor.rating}</span>
+                             </div>
+                           </div>
+                           <div className="flex items-center space-x-4 text-sm text-muted-foreground mb-3">
+                             <div className="flex items-center space-x-1">
+                               <Clock className="w-4 h-4" />
+                               <span>{vendor.deliveryTime}</span>
+                             </div>
+                             <Badge variant="outline" className="text-xs">
+                               {vendor.cuisine}
+                             </Badge>
+                           </div>
+                           <div className="flex items-center justify-between">
+                             <span className="text-sm text-muted-foreground">
+                               {vendor.distance} km away
+                             </span>
+                             <Button
+                               className="bg-gradient-sunset hover:shadow-glow rounded-xl"
+                               size="sm"
+                               disabled={!vendor.isOpen}
+                             >
+                               {vendor.isOpen ? "Order Now" : "Closed"}
+                             </Button>
+                           </div>
+                         </div>
+                       </Card>
+                     );
+                   })}
+                 </div>
         </section>
 
         {/* Quick Actions */}
