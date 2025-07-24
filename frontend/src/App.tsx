@@ -7,6 +7,9 @@ import Index from "./pages/Index";
 import VendorDetails from "./pages/VendorDetails";
 import Cart from "./pages/Cart";
 import OrderConfirmation from "./pages/OrderConfirmation";
+import VendorDashboard from "./pages/VendorDashboard";
+import VendorRegistration from "./pages/VendorRegistration";
+import ProtectedVendorRoute from "./components/ProtectedVendorRoute";
 import NotFound from "./pages/NotFound";
 import { ThirdwebProvider } from "@thirdweb-dev/react";
 import { supportedChains, Base } from "@/constants/chains";
@@ -32,11 +35,24 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
+            {/* Public Routes */}
             <Route path="/" element={<Index />} />
             <Route path="/vendor-details" element={<VendorDetails />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/order-confirmation" element={<OrderConfirmation />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            
+            {/* Vendor Routes */}
+            <Route path="/vendor/register" element={<VendorRegistration />} />
+            <Route 
+              path="/vendor/dashboard" 
+              element={
+                <ProtectedVendorRoute>
+                  <VendorDashboard />
+                </ProtectedVendorRoute>
+              } 
+            />
+            
+            {/* Catch-all route - MUST be last */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

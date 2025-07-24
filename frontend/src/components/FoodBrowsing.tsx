@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, MapPin, Star, Clock, Zap } from "lucide-react";
+import { Search, MapPin, Star, Clock, Zap, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +8,8 @@ import { VendorCard, Vendor } from "@/components/VendorCard";
 import WalletConnectModal from "@/components/ui/WalletConnectModal";
 import chopchainLogo from "@/assets/chopchain-logo.png";
 import { useWallet } from "@/hooks/useWallet";
+import { useVendorRegistry } from "@/hooks/useVendorRegistry";
+import { useNavigate } from "react-router-dom";
 
 const categories = [
   "All", "Jollof", "Soups", "Snacks", "Rice", "Protein", "Swallow", "Drinks"
@@ -50,12 +52,27 @@ const featuredVendors: Vendor[] = [
 ];
 
 export default function FoodBrowsing() {
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [walletModalOpen, setWalletModalOpen] = useState(false);
   const { connected, address, disconnect } = useWallet();
+  const { isVendor } = useVendorRegistry();
 
   const shortAddress = address ? address.slice(0, 6) + "..." + address.slice(-4) : "";
+
+  const handleVendorAction = () => {
+    if (!connected) {
+      setWalletModalOpen(true);
+      return;
+    }
+    
+    if (isVendor) {
+      navigate("/vendor/dashboard");
+    } else {
+      navigate("/vendor/register");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -77,6 +94,18 @@ export default function FoodBrowsing() {
                 <MapPin className="w-4 h-4 mr-1" />
                 Lagos, NG
               </div>
+              
+              {/* Vendor Button */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleVendorAction}
+                className="hidden md:flex items-center space-x-2 rounded-xl border-primary/20 hover:bg-primary/5"
+              >
+                <Store className="w-4 h-4" />
+                <span>{connected && isVendor ? "Dashboard" : "Become Vendor"}</span>
+              </Button>
+
               {connected ? (
                 <Button
                   className="bg-gradient-trust text-primary-foreground"
@@ -174,12 +203,19 @@ export default function FoodBrowsing() {
               <p className="text-xs text-muted-foreground">Complete tasks</p>
             </Card>
 
-            <Card className="p-4 text-center cursor-pointer hover:shadow-card-hover transition-all rounded-xl border-border">
+            <Card 
+              className="p-4 text-center cursor-pointer hover:shadow-card-hover transition-all rounded-xl border-border"
+              onClick={handleVendorAction}
+            >
               <div className="w-12 h-12 bg-gradient-sunset rounded-xl mx-auto mb-2 flex items-center justify-center">
-                <span className="text-xl">💰</span>
+                <Store className="w-6 h-6 text-primary-foreground" />
               </div>
-              <p className="font-medium text-foreground">Wallet</p>
-              <p className="text-xs text-muted-foreground">USDT balance</p>
+              <p className="font-medium text-foreground">
+                {connected && isVendor ? "Dashboard" : "Sell Food"}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {connected && isVendor ? "Manage orders" : "Join as vendor"}
+              </p>
             </Card>
           </div>
         </section>

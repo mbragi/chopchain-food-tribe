@@ -15,16 +15,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useWallet } from "@/hooks/useWallet";
-import { useVendorRegistry } from "@/hooks/useVendorRegistry";
 import { useRewards } from "@/hooks/useRewards";
-import VendorOnboarding from "@/components/VendorOnboarding";
 import VendorProfile from "@/components/VendorProfile";
 import OrderManagement from "@/components/OrderManagement";
 import VendorAnalytics from "@/components/VendorAnalytics";
 
 export default function VendorDashboard() {
-  const { connected, address } = useWallet();
-  const { isVendor, registerVendor, isLoading: registering } = useVendorRegistry();
+  const { address } = useWallet();
   const { chopBalance } = useRewards();
   const [activeTab, setActiveTab] = useState("overview");
 
@@ -37,30 +34,6 @@ export default function VendorDashboard() {
     avgRating: 4.8,
     totalEarnedChop: chopBalance
   };
-
-  if (!connected) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Card className="max-w-md mx-auto rounded-2xl">
-          <CardHeader className="text-center">
-            <CardTitle className="text-primary">Vendor Dashboard</CardTitle>
-          </CardHeader>
-          <CardContent className="text-center">
-            <p className="text-muted-foreground mb-4">
-              Connect your wallet to access the vendor dashboard
-            </p>
-            <Button className="bg-gradient-sunset">
-              Connect Wallet
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  if (!isVendor) {
-    return <VendorOnboarding onRegister={registerVendor} isLoading={registering} />;
-  }
 
   return (
     <div className="min-h-screen bg-background">
