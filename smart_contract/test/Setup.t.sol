@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "../src/Escrow.sol";
 import "../src/CHOPToken.sol";
 import "../src/VendorRegistry.sol";
+import "../src/DeliveryAgentRegistry.sol";
 
 // Mock Stablecoin for testing
 contract MockStablecoin is ERC20 {
@@ -18,10 +19,12 @@ contract SetupTest is Test {
     Escrow escrow;
     CHOPToken chopToken;
     VendorRegistry vendorRegistry;
+    DeliveryAgentRegistry deliveryAgentRegistry;
     MockStablecoin stablecoin;
 
     address user = address(0x1);
     address vendor = address(0x2);
+    address deliveryAgent = address(0x3);
     string orderId = "order-1";
     uint256 amount = 100 * 10**18; // 100 USDC
 
@@ -30,18 +33,25 @@ contract SetupTest is Test {
         stablecoin = new MockStablecoin();
         chopToken = new CHOPToken();
         vendorRegistry = new VendorRegistry();
+        deliveryAgentRegistry = new DeliveryAgentRegistry();
         escrow = new Escrow(
             address(stablecoin),
             address(chopToken),
-            address(vendorRegistry)
+            address(vendorRegistry),
+            address(deliveryAgentRegistry)
         );
 
         // Setup permissions
         chopToken.setMinter(address(escrow));
+        deliveryAgentRegistry.setEscrowContract(address(escrow));
         
         // Register vendor
         vm.prank(vendor);
         vendorRegistry.registerVendor();
+
+        // Register delivery agent
+        vm.prank(deliveryAgent);
+        deliveryAgentRegistry.registerDeliveryAgent();
 
         // Fund user with stablecoin
         stablecoin.transfer(user, amount * 2);
@@ -58,18 +68,22 @@ contract SetupTest is Test {
         (
             address storedUser,
             address storedVendor,
+            address storedDeliveryAgent,
             uint256 storedAmount,
             bool confirmed,
             bool refunded,
-            bool paid
+            bool paid,
+            uint256 assignedAt
         ) = escrow.getOrder(orderId);
 
         assertEq(storedUser, user);
         assertEq(storedVendor, vendor);
+        assertEq(storedDeliveryAgent, address(0)); // Not assigned yet
         assertEq(storedAmount, amount);
         assertEq(confirmed, false);
         assertEq(refunded, false);
         assertEq(paid, false);
+        assertEq(assignedAt, 0);
 
         // Verify CHOP rewards minted
         uint256 expectedReward = (amount * 5) / 100; // 5% reward
@@ -80,5 +94,43 @@ contract SetupTest is Test {
         assertEq(stablecoin.balanceOf(vendor), amount);
         
         vm.stopPrank();
+    }
+
+    function testIntegrationWithDeliveryAgent() public {
+        vm.startPrank(user);
+        
+        // Place order
+        stablecoin.approve(address(escrow), amount);
+        escrow.placeOrder(vendor, amount, orderId);
+        vm.stopPrank();
+
+        // Assign delivery agent
+        vm.prank(deliveryAgent);
+        escrow.assignDeliveryAgent(orderId);
+
+        // Verify assignment
+        (,, address assignedAgent,,,,, uint256 assignedAt) = escrow.getOrder(orderId);
+        assertEq(assignedAgent, deliveryAgent);
+        assertGt(assignedAt, 0);
+
+        // Start delivery
+        vm.prank(deliveryAgent);
+        escrow.startDelivery(orderId);
+
+        // Delivery agent confirms delivery
+        vm.prank(deliveryAgent);
+        escrow.confirmDelivery(orderId);
+
+        // Verify vendor payment
+        assertEq(stablecoin.balanceOf(vendor), amount);
+
+        // Test rating system
+        vm.prank(user);
+        escrow.rateDeliveryAgent(orderId, 450); // 4.5 stars
+
+        // Verify agent rating updated
+        IDeliveryAgentRegistry.DeliveryAgent memory agent = deliveryAgentRegistry.getDeliveryAgent(deliveryAgent);
+        assertEq(agent.totalDeliveries, 1);
+        assertEq(agent.rating, 450); // First rating becomes the rating
     }
 }
