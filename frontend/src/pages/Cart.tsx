@@ -1,215 +1,379 @@
 import { useState } from "react";
-import { ArrowLeft, MapPin, Clock, Wallet, CreditCard, Shield, Zap } from "lucide-react";
+import { Minus, Plus, ShoppingCart, CreditCard, Shield, Clock, Zap, Star, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { useWallet } from "@/hooks/useWallet"; 
+import { useRewards } from "@/hooks/useRewards";
 import { useNavigate } from "react-router-dom";
-import { useWallet } from "@/hooks/useWallet";
-import { useCart } from "@/hooks/useCart";
+import WalletConnectModal from "@/components/ui/WalletConnectModal";
+import RewardsWidget from "@/components/RewardsWidget";
+
+interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  vendor: string;
+  image: string;
+  special?: string;
+}
 
 export default function Cart() {
   const navigate = useNavigate();
-  const { items: cartItems, total: cartTotal } = useCart();
-  const { connected, address, balance } = useWallet();
-  const [selectedPayment, setSelectedPayment] = useState("usdt");
-  const [deliveryAddress, setDeliveryAddress] = useState("123 Victoria Island, Lagos");
-  const [phoneNumber, setPhoneNumber] = useState("+234 801 234 5678");
+  const { connected } = useWallet();
+  const { 
+    chopBalance, 
+    userLevel, 
+    rewardMultiplier, 
+    connected: rewardsConnected,
+    getUserLevel,
+    getRewardMultiplier
+  } = useRewards();
+  
+  const [walletModalOpen, setWalletModalOpen] = useState(false);
+  const [cartItems, setCartItems] = useState<CartItem[]>([
+    {
+      id: "1",
+      name: "Jollof Rice with Chicken",
+      price: 12.50,
+      quantity: 2,
+      vendor: "Mama's Kitchen",
+      image: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=100&h=100&fit=crop",
+      special: "Spicy"
+    },
+    {
+      id: "2", 
+      name: "Grilled Fish with Plantain",
+      price: 15.00,
+      quantity: 1,
+      vendor: "Mama's Kitchen",
+      image: "https://images.unsplash.com/photo-1544943342-0c3d1b5e7e21?w=100&h=100&fit=crop"
+    }
+  ]);
 
-  // Remove subtotal, deliveryFee, serviceFee, total, paymentMethods, selectedMethod, hasInsufficientFunds
-  // Use mock stablecoin balance from wallet
+  const updateQuantity = (id: string, change: number) => {
+    setCartItems(items => 
+      items.map(item => 
+        item.id === id 
+          ? { ...item, quantity: Math.max(0, item.quantity + change) }
+          : item
+      ).filter(item => item.quantity > 0)
+    );
+  };
+
+  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const deliveryFee = 2.50;
   const serviceFee = 1.25;
-  const total = cartTotal + deliveryFee + serviceFee;
-  const hasInsufficientFunds = balance < total;
+  const total = subtotal + deliveryFee + serviceFee;
+
+  // Calculate CHOP rewards (5% of total)
+  const baseRewardAmount = total * 0.05;
+  const actualRewardAmount = baseRewardAmount * (rewardsConnected ? rewardMultiplier : 1);
+  
+  const formatTokens = (amount: number): string => {
+    if (amount >= 1000) {
+      return `${(amount / 1000).toFixed(1)}K`;
+    }
+    return amount.toFixed(1);
+  };
 
   const handlePlaceOrder = () => {
-    // Mock escrow transaction
-    console.log("Placing order with escrow...");
+    if (!connected) {
+      setWalletModalOpen(true);
+      return;
+    }
     // Navigate to order confirmation
-    navigate("/order-confirmation");
+    navigate('/order-confirmation');
   };
+
+  if (cartItems.length === 0) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <Card className="max-w-md mx-auto rounded-2xl">
+          <CardHeader className="text-center">
+            <ShoppingCart className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+            <CardTitle>Your cart is empty</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center space-y-4">
+            <p className="text-muted-foreground">
+              Add some delicious food to get started!
+            </p>
+            <Button 
+              className="w-full bg-gradient-sunset"
+              onClick={() => navigate('/')}
+            >
+              Browse Food
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
+      <WalletConnectModal open={walletModalOpen} onOpenChange={setWalletModalOpen} />
+      
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate(-1)}
-              className="rounded-xl"
-            >
-              <ArrowLeft className="w-4 h-4" />
-            </Button>
-
+      <header className="border-b border-border bg-card">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-xl font-semibold">Your Cart</h1>
-              <p className="text-sm text-muted-foreground">{cartItems.length} items</p>
+              <h1 className="text-2xl font-bold text-foreground">Your Order</h1>
+              <p className="text-muted-foreground">
+                Review and confirm your delicious choices
+              </p>
             </div>
+            <Button variant="ghost" onClick={() => navigate('/')}>
+              ← Continue Shopping
+            </Button>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-6 max-w-2xl">
-        {/* Order Items */}
-        <Card className="mb-6 rounded-xl border-border">
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <span>Order from Vendor</span>
-              <Badge className="bg-secondary text-secondary-foreground">
-                <Clock className="w-3 h-3 mr-1" />
-                25-35 min
-              </Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {cartItems.map((item) => (
-              <div key={item.id} className="flex justify-between items-center">
-                <div className="flex-1">
-                  <p className="font-medium">{item.name}</p>
-                  <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
-                </div>
-                <p className="font-semibold">${(item.price * item.quantity).toFixed(2)}</p>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
+      <div className="container mx-auto px-4 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Cart Items */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Items List */}
+            <Card className="rounded-2xl border-border">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <ShoppingCart className="w-5 h-5" />
+                  <span>Order Items</span>
+                  <Badge variant="secondary">{cartItems.length} items</Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {cartItems.map((item) => (
+                  <div key={item.id} className="flex items-center space-x-4 p-4 bg-muted/30 rounded-xl">
+                    <img 
+                      src={item.image} 
+                      alt={item.name}
+                      className="w-16 h-16 rounded-lg object-cover"
+                    />
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-foreground">{item.name}</h3>
+                      <p className="text-sm text-muted-foreground">{item.vendor}</p>
+                      {item.special && (
+                        <Badge variant="secondary" className="text-xs mt-1">
+                          {item.special}
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8 rounded-full"
+                          onClick={() => updateQuantity(item.id, -1)}
+                        >
+                          <Minus className="w-4 h-4" />
+                        </Button>
+                        <span className="w-8 text-center font-medium">{item.quantity}</span>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8 rounded-full"
+                          onClick={() => updateQuantity(item.id, 1)}
+                        >
+                          <Plus className="w-4 h-4" />
+                        </Button>
+                      </div>
+                      <div className="text-right min-w-[80px]">
+                        <p className="font-bold text-foreground">${(item.price * item.quantity).toFixed(2)}</p>
+                        <p className="text-sm text-muted-foreground">${item.price.toFixed(2)} each</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
 
-        {/* Delivery Details */}
-        <Card className="mb-6 rounded-xl border-border">
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <MapPin className="w-5 h-5" />
-              Delivery Details
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <Label htmlFor="address">Delivery Address</Label>
-              <Input
-                id="address"
-                value={deliveryAddress}
-                onChange={(e) => setDeliveryAddress(e.target.value)}
-                className="mt-1 rounded-xl"
-              />
-            </div>
-            <div>
-              <Label htmlFor="phone">Phone Number</Label>
-              <Input
-                id="phone"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                className="mt-1 rounded-xl"
-              />
-            </div>
-          </CardContent>
-        </Card>
+            {/* CHOP Rewards Preview */}
+            {connected && rewardsConnected && (
+              <Card className="rounded-2xl border-border bg-gradient-to-br from-primary/5 to-accent/5">
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2">
+                    <Zap className="w-5 h-5 text-accent" />
+                    <span>Reward Preview</span>
+                    <Badge className="bg-gradient-rewards text-accent-foreground">
+                      {rewardMultiplier}x Multiplier
+                    </Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm text-muted-foreground">You'll earn with this order:</p>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-2xl font-bold text-accent">
+                          +{formatTokens(actualRewardAmount)} CHOP
+                        </span>
+                        {rewardMultiplier > 1 && (
+                          <div className="text-sm text-muted-foreground">
+                            <span className="line-through">{formatTokens(baseRewardAmount)}</span>
+                            <span className="ml-1 text-accent font-medium">
+                              (+{formatTokens(actualRewardAmount - baseRewardAmount)} bonus)
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="flex items-center space-x-1 text-sm">
+                        <span className={`${userLevel.color}`}>{userLevel.icon}</span>
+                        <span className="text-muted-foreground">{userLevel.level} Level</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Current balance: {formatTokens(chopBalance)} CHOP
+                      </p>
+                    </div>
+                  </div>
 
-        {/* Payment Method */}
-        <Card className="mb-6 rounded-xl border-border">
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Wallet className="w-5 h-5" />
-              Payment Method
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-center justify-between p-4 rounded-xl border border-border">
-              <div>
-                <p className="font-semibold">Mock Stablecoin</p>
-                <p className="text-xs text-muted-foreground">Wallet: {address}</p>
-              </div>
-              <div className="text-right">
-                <p className="font-medium">${balance.toFixed(2)}</p>
-                <p className="text-xs text-muted-foreground">Available</p>
-              </div>
-            </div>
-            {hasInsufficientFunds && (
-              <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-xl">
-                <p className="text-sm text-destructive font-medium">Insufficient balance</p>
-                <p className="text-xs text-destructive/80 mt-1">
-                  You need ${(total - balance).toFixed(2)} more
-                </p>
-              </div>
+                  {/* Level up preview */}
+                  {rewardMultiplier < 2.0 && (
+                    <div className="bg-secondary/10 rounded-xl p-3">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <Star className="w-4 h-4 text-secondary" />
+                        <span className="text-sm font-medium text-foreground">Level Up Rewards</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Reach higher levels to unlock better multipliers! 
+                        Diamond level gets 2.0x rewards on every order.
+                      </p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             )}
-          </CardContent>
-        </Card>
 
-        {/* Escrow Protection */}
-        <Card className="mb-6 rounded-xl border-border bg-gradient-to-br from-secondary/5 to-secondary/10">
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-3">
-              <Shield className="w-8 h-8 text-secondary" />
-              <div>
-                <p className="font-semibold text-secondary">Escrow Protection</p>
-                <p className="text-sm text-muted-foreground">
-                  Your payment is held safely until delivery is confirmed
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            {/* Delivery Information */}
+            <Card className="rounded-2xl border-border">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Clock className="w-5 h-5" />
+                  <span>Delivery Details</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-muted/30 rounded-xl">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                      <Clock className="w-6 h-6 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground">Standard Delivery</p>
+                      <p className="text-sm text-muted-foreground">25-35 minutes</p>
+                    </div>
+                  </div>
+                  <p className="font-bold text-foreground">${deliveryFee.toFixed(2)}</p>
+                </div>
 
-        {/* Order Summary */}
-        <Card className="mb-6 rounded-xl border-border">
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <CreditCard className="w-5 h-5" />
-              Order Summary
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="flex justify-between">
-              <span>Subtotal</span>
-              <span>${cartTotal.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Delivery Fee</span>
-              <span>${deliveryFee.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Service Fee</span>
-              <span>${serviceFee.toFixed(2)}</span>
-            </div>
-            <Separator />
-            <div className="flex justify-between font-semibold">
-              <span>Total</span>
-              <span>${total.toFixed(2)}</span>
-            </div>
+                <div className="text-sm text-muted-foreground space-y-1">
+                  <p>📍 Delivering to: Victoria Island, Lagos</p>
+                  <p>🏠 Block 5, Apartment 3B</p>
+                  <p>📞 +234 808 123 4567</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
-            {/* $CHOP Rewards */}
-            <div className="bg-gradient-rewards/10 p-3 rounded-xl border border-accent/20">
-              <div className="flex items-center space-x-2">
-                <Zap className="w-4 h-4 text-accent" />
-                <span className="text-sm font-medium text-accent-foreground">
-                  Earn 25 $CHOP tokens with this order!
-                </span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          {/* Order Summary Sidebar */}
+          <div className="space-y-6">
+            {/* Rewards Widget */}
+            <RewardsWidget 
+              compact={false}
+              showProgress={true}
+              className="lg:block hidden"
+            />
 
-        {/* Place Order Button */}
-        <Button
-          className="w-full rounded-xl"
-          size="lg"
-          disabled={hasInsufficientFunds}
-          onClick={handlePlaceOrder}
-        >
-          <Shield className="w-4 h-4 mr-2" />
-          Place Order (Escrow)
-        </Button>
+            {/* Order Summary */}
+            <Card className="rounded-2xl border-border sticky top-6">
+              <CardHeader>
+                <CardTitle>Order Summary</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Subtotal</span>
+                    <span className="font-medium">${subtotal.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Delivery Fee</span>
+                    <span className="font-medium">${deliveryFee.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Service Fee</span>
+                    <span className="font-medium">${serviceFee.toFixed(2)}</span>
+                  </div>
+                  
+                  <Separator />
+                  
+                  <div className="flex justify-between text-lg font-bold">
+                    <span>Total</span>
+                    <span>${total.toFixed(2)}</span>
+                  </div>
 
-        <p className="text-xs text-center text-muted-foreground mt-4">
-          By placing this order, you agree to our terms and escrow policy.
-          Payment will be held until delivery is confirmed.
-        </p>
-      </main>
+                  {/* Rewards Earning Summary */}
+                  {connected && rewardsConnected && (
+                    <div className="bg-accent/10 rounded-xl p-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <Zap className="w-4 h-4 text-accent" />
+                          <span className="text-sm font-medium">You'll earn</span>
+                        </div>
+                        <span className="font-bold text-accent">
+                          +{formatTokens(actualRewardAmount)} CHOP
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        5% rewards • {rewardMultiplier}x multiplier applied
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                    <Shield className="w-4 h-4" />
+                    <span>Escrow protection active</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                    <CreditCard className="w-4 h-4" />
+                    <span>Paying with USDT</span>
+                  </div>
+                </div>
+
+                <Button 
+                  className="w-full h-12 bg-gradient-sunset hover:shadow-glow text-lg font-semibold"
+                  onClick={handlePlaceOrder}
+                >
+                  {connected ? (
+                    <>
+                      <CreditCard className="w-5 h-5 mr-2" />
+                      Place Order • ${total.toFixed(2)}
+                    </>
+                  ) : (
+                    <>
+                      Connect Wallet to Order
+                    </>
+                  )}
+                </Button>
+
+                {!connected && (
+                  <p className="text-xs text-muted-foreground text-center">
+                    Connect your wallet to place order and start earning CHOP rewards
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
