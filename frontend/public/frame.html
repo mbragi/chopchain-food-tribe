@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🍽️ ChopChain - Decentralized Food Delivery</title>
+    
+    <!-- Farcaster Frame Meta Tags -->
+    <meta property="fc:frame" content="vNext" />
+    <meta property="fc:frame:image" content="http://localhost:8080/frame-image.png" />
+    <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
+    <meta property="fc:frame:button:1" content="🍽️ Browse Restaurants" />
+    <meta property="fc:frame:button:1:action" content="post" />
+    <meta property="fc:frame:button:2" content="🌐 Open Full App" />
+    <meta property="fc:frame:button:2:action" content="link" />
+    <meta property="fc:frame:button:2:target" content="http://localhost:8080/" />
+    <meta property="fc:frame:post_url" content="http://localhost:8080/api/frame" />
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="🍽️ ChopChain - Decentralized Food Delivery" />
+    <meta property="og:description" content="Order food from top African restaurants with crypto payments. Fast, secure, delicious!" />
+    <meta property="og:image" content="http://localhost:8080/frame-image.png" />
+    <meta property="og:url" content="http://localhost:8080/frame.html" />
+    <meta property="og:type" content="website" />
+    
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="🍽️ ChopChain - Decentralized Food Delivery" />
+    <meta name="twitter:description" content="Order food from top African restaurants with crypto payments" />
+    <meta name="twitter:image" content="http://localhost:8080/frame-image.png" />
+    
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .frame-container {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        max-width: 400px;
+        width: 100%;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        text-align: center;
+      }
+      
+      .logo {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 20px;
+        background: #ff6b35;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+      }
+      
+      h1 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 24px;
+      }
+      
+      .subtitle {
+        color: #666;
+        margin-bottom: 30px;
+        font-size: 16px;
+      }
+      
+      .features {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 30px;
+      }
+      
+      .feature {
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        font-size: 14px;
+      }
+      
+      .cta-button {
+        background: #ff6b35;
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        width: 100%;
+        text-decoration: none;
+        display: inline-block;
+        transition: background 0.3s;
+      }
+      
+      .cta-button:hover {
+        background: #e55a2b;
+      }
+      
+      .frame-info {
+        margin-top: 20px;
+        padding: 15px;
+        background: #e3f2fd;
+        border-radius: 10px;
+        font-size: 14px;
+        color: #1565c0;
+      }
+    </style>
+  </head>
+  
+  <body>
+    <div class="frame-container">
+      <div class="logo">🍽️</div>
+      <h1>ChopChain</h1>
+      <p class="subtitle">Decentralized Food Delivery</p>
+      
+      <div class="features">
+        <div class="feature">
+          <strong>🏪 Local Vendors</strong><br>
+          Support African restaurants
+        </div>
+        <div class="feature">
+          <strong>💰 Crypto Rewards</strong><br>
+          Earn tokens with orders
+        </div>
+        <div class="feature">
+          <strong>⚡ Fast Delivery</strong><br>
+          20-40 minute delivery
+        </div>
+        <div class="feature">
+          <strong>🔒 Secure Payments</strong><br>
+          Blockchain-powered
+        </div>
+      </div>
+      
+      <a href="http://localhost:8080/" class="cta-button">
+        🚀 Start Ordering Now
+      </a>
+      
+      <div class="frame-info">
+        <strong>🎯 Farcaster Frame Ready!</strong><br>
+        This page contains proper frame metadata for social sharing on Farcaster
+      </div>
+    </div>
+  </body>
+</html>
