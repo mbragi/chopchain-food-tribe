@@ -18,6 +18,7 @@ import ProtectedDeliveryAgentRoute from "./components/ProtectedDeliveryAgentRout
 import NotFound from "./pages/NotFound";
 import FoodBrowsing from "./components/FoodBrowsing";
 import OnboardingFlow from "./components/OnboardingFlow";
+import FramePage from "./pages/FramePage";
 import { ThirdwebProvider } from "@thirdweb-dev/react";
 import { supportedChains, Base } from "@/constants/chains";
 
@@ -48,6 +49,9 @@ const App = () => (
                     <Route path="/vendor-details" element={<VendorDetails />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/order-confirmation" element={<OrderConfirmation />} />
+                    
+                    {/* Farcaster Frame Route */}
+                    <Route path="/frame" element={<FramePage />} />
                     
                     {/* Onboarding Routes */}
                     <Route path="/onboarding/customer" element={<OnboardingFlow userType="customer" />} />
