@@ -167,6 +167,9 @@ contract Escrow is IEscrow, Ownable {
 
         // Update delivery agent rating
         deliveryAgentRegistry.updateAgentRating(order.deliveryAgent, rating);
+        
+        // Also update vendor rating
+        vendorRegistry.updateVendorRating(order.vendor, rating);
     }
 
     /**
