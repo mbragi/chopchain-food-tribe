@@ -6,6 +6,44 @@
   },
   {
     "type": "function",
+    "name": "addMenuItem",
+    "inputs": [
+      {
+        "name": "name",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "price",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "category",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "isPopular",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "spicyLevel",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "batchDeregisterVendors",
     "inputs": [
       {
@@ -19,6 +57,40 @@
   },
   {
     "type": "function",
+    "name": "businessHours",
+    "inputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "isOperating",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "openTime",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "closeTime",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "deregisterVendor",
     "inputs": [
       {
@@ -29,6 +101,304 @@
     ],
     "outputs": [],
     "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "escrowContract",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getActiveVendors",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "vendors",
+        "type": "address[]",
+        "internalType": "address[]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getBusinessHours",
+    "inputs": [
+      {
+        "name": "vendor",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple[7]",
+        "internalType": "struct IVendorRegistry.DayHours[7]",
+        "components": [
+          {
+            "name": "isOperating",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "openTime",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "closeTime",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getMenuItem",
+    "inputs": [
+      {
+        "name": "vendor",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "itemId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "item",
+        "type": "tuple",
+        "internalType": "struct IVendorRegistry.MenuItem",
+        "components": [
+          {
+            "name": "itemId",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "price",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "category",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "isAvailable",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "isPopular",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "spicyLevel",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getTotalVendors",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "count",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getVendorMenu",
+    "inputs": [
+      {
+        "name": "vendor",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "items",
+        "type": "tuple[]",
+        "internalType": "struct IVendorRegistry.MenuItem[]",
+        "components": [
+          {
+            "name": "itemId",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "price",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "category",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "isAvailable",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "isPopular",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "spicyLevel",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getVendorProfile",
+    "inputs": [
+      {
+        "name": "vendor",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "profile",
+        "type": "tuple",
+        "internalType": "struct IVendorRegistry.VendorProfile",
+        "components": [
+          {
+            "name": "vendorAddress",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "storeName",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "cuisineTypes",
+            "type": "string[]",
+            "internalType": "string[]"
+          },
+          {
+            "name": "contactPhone",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "contactEmail",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "physicalAddress",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "deliveryRadius",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "minimumOrder",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "deliveryFee",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "preparationTime",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "isActive",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "rating",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "totalOrders",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "registeredAt",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
   },
   {
     "type": "function",
@@ -51,6 +421,84 @@
   },
   {
     "type": "function",
+    "name": "menuItems",
+    "inputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "itemId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "price",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "category",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "isAvailable",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "isPopular",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "spicyLevel",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "nextMenuItemId",
+    "inputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "owner",
     "inputs": [],
     "outputs": [
@@ -65,7 +513,71 @@
   {
     "type": "function",
     "name": "registerVendor",
-    "inputs": [],
+    "inputs": [
+      {
+        "name": "storeName",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "cuisineTypes",
+        "type": "string[]",
+        "internalType": "string[]"
+      },
+      {
+        "name": "contactPhone",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "contactEmail",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "physicalAddress",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "deliveryRadius",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "minimumOrder",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "deliveryFee",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "preparationTime",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "removeMenuItem",
+    "inputs": [
+      {
+        "name": "itemId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
     "outputs": [],
     "stateMutability": "nonpayable"
   },
@@ -75,6 +587,45 @@
     "inputs": [],
     "outputs": [],
     "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setEscrowContract",
+    "inputs": [
+      {
+        "name": "_escrowContract",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setVendorStatus",
+    "inputs": [
+      {
+        "name": "isActive",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "totalVendors",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
   },
   {
     "type": "function",
@@ -88,6 +639,381 @@
     ],
     "outputs": [],
     "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "updateBusinessHours",
+    "inputs": [
+      {
+        "name": "newBusinessHours",
+        "type": "tuple[7]",
+        "internalType": "struct IVendorRegistry.DayHours[7]",
+        "components": [
+          {
+            "name": "isOperating",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "openTime",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "closeTime",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "updateMenuItem",
+    "inputs": [
+      {
+        "name": "itemId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "price",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "category",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "isAvailable",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "isPopular",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "spicyLevel",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "updateVendorProfile",
+    "inputs": [
+      {
+        "name": "storeName",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "cuisineTypes",
+        "type": "string[]",
+        "internalType": "string[]"
+      },
+      {
+        "name": "contactPhone",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "contactEmail",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "physicalAddress",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "deliveryRadius",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "minimumOrder",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "deliveryFee",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "preparationTime",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "updateVendorRating",
+    "inputs": [
+      {
+        "name": "vendor",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "rating",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "vendorAddresses",
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "vendorMenuItems",
+    "inputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "vendorProfiles",
+    "inputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "vendorAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "storeName",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "contactPhone",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "contactEmail",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "physicalAddress",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "deliveryRadius",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "minimumOrder",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "deliveryFee",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "preparationTime",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "isActive",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "rating",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "totalOrders",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "registeredAt",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "event",
+    "name": "BusinessHoursUpdated",
+    "inputs": [
+      {
+        "name": "vendor",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "MenuItemAdded",
+    "inputs": [
+      {
+        "name": "vendor",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "itemId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "price",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "MenuItemRemoved",
+    "inputs": [
+      {
+        "name": "vendor",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "itemId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "MenuItemUpdated",
+    "inputs": [
+      {
+        "name": "vendor",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "itemId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "price",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
   },
   {
     "type": "event",
@@ -123,6 +1049,50 @@
   },
   {
     "type": "event",
+    "name": "VendorProfileUpdated",
+    "inputs": [
+      {
+        "name": "vendor",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "storeName",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "VendorRated",
+    "inputs": [
+      {
+        "name": "vendor",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "newRating",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "totalOrders",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
     "name": "VendorRegistered",
     "inputs": [
       {
@@ -130,6 +1100,37 @@
         "type": "address",
         "indexed": true,
         "internalType": "address"
+      },
+      {
+        "name": "storeName",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "VendorStatusChanged",
+    "inputs": [
+      {
+        "name": "vendor",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "isActive",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
       }
     ],
     "anonymous": false
@@ -169,6 +1170,17 @@
   },
   {
     "type": "error",
+    "name": "OrderNotFound",
+    "inputs": [
+      {
+        "name": "orderId",
+        "type": "string",
+        "internalType": "string"
+      }
+    ]
+  },
+  {
+    "type": "error",
     "name": "OwnableInvalidOwner",
     "inputs": [
       {
@@ -184,6 +1196,17 @@
     "inputs": [
       {
         "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "UnauthorizedCaller",
+    "inputs": [
+      {
+        "name": "caller",
         "type": "address",
         "internalType": "address"
       }

@@ -50,10 +50,25 @@ contract EscrowTest is Test {
         // Setup permissions
         chopToken.setMinter(address(escrow));
         deliveryAgentRegistry.setEscrowContract(address(escrow));
+        vendorRegistry.setEscrowContract(address(escrow));
 
         // Register vendor
         vm.prank(vendor);
-        vendorRegistry.registerVendor();
+        string[] memory cuisineTypes = new string[](2);
+        cuisineTypes[0] = "Nigerian";
+        cuisineTypes[1] = "African";
+        vendorRegistry.registerVendor(
+            "Test Kitchen",
+            "Test description",
+            cuisineTypes,
+            "+234 801 234 5678",
+            "test@chopchain.com",
+            "Test Address",
+            10, // delivery radius
+            5 * 1e18, // minimum order
+            2 * 1e18, // delivery fee
+            30 // preparation time
+        );
 
         // Register delivery agent
         vm.prank(deliveryAgent);

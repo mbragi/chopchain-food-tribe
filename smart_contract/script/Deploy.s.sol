@@ -50,6 +50,9 @@ contract DeployScript is Script {
         // Set Escrow contract address in DeliveryAgentRegistry
         agentRegistry.setEscrowContract(address(escrowContract));
 
+        // Set Escrow contract address in VendorRegistry (for vendor ratings)
+        registry.setEscrowContract(address(escrowContract));
+
         vm.stopBroadcast();
 
         // Return deployed addresses
