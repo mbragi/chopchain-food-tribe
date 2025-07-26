@@ -44,7 +44,7 @@ contract VendorRegistry is IVendorRegistry, Ownable {
     function registerVendor(
         string calldata storeName,
         string calldata description,
-        string calldata cuisineType,
+        string[] calldata cuisineTypes,
         string calldata contactPhone,
         string calldata contactEmail,
         string calldata physicalAddress,
@@ -55,6 +55,7 @@ contract VendorRegistry is IVendorRegistry, Ownable {
     ) external override {
         if (isVendor[msg.sender]) revert Errors.AlreadyRegistered(msg.sender);
         if (bytes(storeName).length == 0) revert Errors.InvalidAmount(0);
+        if (cuisineTypes.length == 0) revert Errors.InvalidAmount(0);
         if (deliveryRadius == 0 || deliveryRadius > 100) revert Errors.InvalidAmount(deliveryRadius);
         if (minimumOrder == 0) revert Errors.InvalidAmount(minimumOrder);
         if (preparationTime == 0 || preparationTime > 300) revert Errors.InvalidAmount(preparationTime); // Max 5 hours
@@ -64,7 +65,7 @@ contract VendorRegistry is IVendorRegistry, Ownable {
             vendorAddress: msg.sender,
             storeName: storeName,
             description: description,
-            cuisineType: cuisineType,
+            cuisineTypes: cuisineTypes,
             contactPhone: contactPhone,
             contactEmail: contactEmail,
             physicalAddress: physicalAddress,
@@ -100,7 +101,7 @@ contract VendorRegistry is IVendorRegistry, Ownable {
     function updateVendorProfile(
         string calldata storeName,
         string calldata description,
-        string calldata cuisineType,
+        string[] calldata cuisineTypes,
         string calldata contactPhone,
         string calldata contactEmail,
         string calldata physicalAddress,
@@ -111,6 +112,7 @@ contract VendorRegistry is IVendorRegistry, Ownable {
     ) external override {
         if (!isVendor[msg.sender]) revert Errors.NotRegistered(msg.sender);
         if (bytes(storeName).length == 0) revert Errors.InvalidAmount(0);
+        if (cuisineTypes.length == 0) revert Errors.InvalidAmount(0);
         if (deliveryRadius == 0 || deliveryRadius > 100) revert Errors.InvalidAmount(deliveryRadius);
         if (minimumOrder == 0) revert Errors.InvalidAmount(minimumOrder);
         if (preparationTime == 0 || preparationTime > 300) revert Errors.InvalidAmount(preparationTime);

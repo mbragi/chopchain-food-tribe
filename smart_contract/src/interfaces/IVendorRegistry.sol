@@ -23,7 +23,7 @@ interface IVendorRegistry {
      * @param vendorAddress The blockchain address of the vendor
      * @param storeName The name of the restaurant/store  
      * @param description Brief description of the vendor's cuisine/specialty
-     * @param cuisineType Type of cuisine (e.g., "Nigerian, African, Continental")
+     * @param cuisineTypes Array of cuisine types (e.g., ["Nigerian", "African", "Continental"])
      * @param contactPhone Phone number for customer contact
      * @param contactEmail Email address for customer contact
      * @param physicalAddress Physical location of the restaurant
@@ -40,7 +40,7 @@ interface IVendorRegistry {
         address vendorAddress;
         string storeName;
         string description;
-        string cuisineType;
+        string[] cuisineTypes;
         string contactPhone;
         string contactEmail;
         string physicalAddress;
@@ -125,7 +125,7 @@ interface IVendorRegistry {
      * @notice Registers a vendor with comprehensive profile information
      * @param storeName Name of the restaurant/store
      * @param description Brief description of the cuisine/specialty
-     * @param cuisineType Type of cuisine offered
+     * @param cuisineTypes Array of cuisine types offered
      * @param contactPhone Phone number for customer contact
      * @param contactEmail Email address for customer contact  
      * @param physicalAddress Physical location of the restaurant
@@ -137,7 +137,7 @@ interface IVendorRegistry {
     function registerVendor(
         string calldata storeName,
         string calldata description,
-        string calldata cuisineType,
+        string[] calldata cuisineTypes,
         string calldata contactPhone,
         string calldata contactEmail,
         string calldata physicalAddress,
@@ -151,7 +151,7 @@ interface IVendorRegistry {
      * @notice Updates vendor profile information
      * @param storeName Updated store name
      * @param description Updated description
-     * @param cuisineType Updated cuisine type
+     * @param cuisineTypes Updated cuisine types array
      * @param contactPhone Updated phone number
      * @param contactEmail Updated email address
      * @param physicalAddress Updated physical address
@@ -163,7 +163,7 @@ interface IVendorRegistry {
     function updateVendorProfile(
         string calldata storeName,
         string calldata description,
-        string calldata cuisineType,
+        string[] calldata cuisineTypes,
         string calldata contactPhone,
         string calldata contactEmail,
         string calldata physicalAddress,
