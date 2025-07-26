@@ -32,24 +32,29 @@ export default function VendorOnboarding({ onRegister, isLoading }: VendorOnboar
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate form
-    if (!formData.storeName || !formData.phone || !formData.address) {
-      toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    // Register vendor on blockchain
-    const success = await onRegister();
+    // For now, we'll just register on blockchain
+    // TODO: Store business details in database or IPFS
+    console.log("Business details collected:", formData);
     
-    if (success) {
-      // In a real app, you'd also save the business details to a database
+    try {
+      // Register vendor on blockchain
+      const success = await onRegister();
+      
+      if (success) {
+        toast({
+          title: "Registration Successful!",
+          description: "Your vendor account has been created. Welcome to ChopChain!",
+        });
+        
+        // TODO: Save business details to database
+        console.log("Business details to be stored:", formData);
+      }
+    } catch (error) {
+      console.error("Registration failed:", error);
       toast({
-        title: "Registration Successful!",
-        description: "Your vendor account has been created. Welcome to ChopChain!",
+        title: "Registration Failed",
+        description: "Failed to register vendor. Please try again.",
+        variant: "destructive"
       });
     }
   };

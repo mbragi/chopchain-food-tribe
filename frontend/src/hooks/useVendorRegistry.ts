@@ -32,13 +32,29 @@ export function useVendorRegistry() {
 
   // Register as vendor
   const registerVendor = useCallback(async () => {
+    console.log("🚀 Starting vendor registration...");
+    console.log("Contract loaded:", !!vendorRegistryContract);
+    console.log("Current address:", address);
+    console.log("Is already vendor:", isVendor);
+
     if (!vendorRegistryContract) {
-      setError("Vendor registry contract not loaded");
+      const error = "Vendor registry contract not loaded";
+      setError(error);
+      console.error("❌", error);
+      return false;
+    }
+
+    if (!address) {
+      const error = "Wallet not connected";
+      setError(error);
+      console.error("❌", error);
       return false;
     }
 
     if (isVendor) {
-      setError("Already registered as vendor");
+      const error = "Already registered as vendor";
+      setError(error);
+      console.error("❌", error);
       return false;
     }
 
@@ -46,14 +62,18 @@ export function useVendorRegistry() {
     setError(null);
 
     try {
+      console.log("📝 Calling registerVendor on contract...");
+      
       toast({
         title: "Registering Vendor",
-        description: "Registering your address as a vendor...",
+        description: "Please confirm the transaction in your wallet...",
       });
 
       const result = await registerVendorWrite({
         args: [],
       });
+
+      console.log("✅ Transaction sent:", result);
 
       toast({
         title: "Vendor Registered!",
@@ -65,6 +85,7 @@ export function useVendorRegistry() {
       setIsLoading(false);
       return result;
     } catch (err: any) {
+      console.error("❌ Registration failed:", err);
       const errorMessage = err?.message || "Failed to register vendor";
       setError(errorMessage);
       setIsLoading(false);
@@ -83,6 +104,7 @@ export function useVendorRegistry() {
     registerVendorWrite,
     toast,
     refetchVendorStatus,
+    address,
   ]);
 
   // Check if any address is a vendor
