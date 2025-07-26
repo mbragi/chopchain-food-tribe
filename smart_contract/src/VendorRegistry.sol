@@ -122,7 +122,7 @@ contract VendorRegistry is IVendorRegistry, Ownable {
         // Update profile data
         profile.storeName = storeName;
         profile.description = description;
-        profile.cuisineType = cuisineType;
+        profile.cuisineTypes = cuisineTypes;
         profile.contactPhone = contactPhone;
         profile.contactEmail = contactEmail;
         profile.physicalAddress = physicalAddress;
@@ -137,14 +137,36 @@ contract VendorRegistry is IVendorRegistry, Ownable {
     /**
      * @inheritdoc IVendorRegistry
      */
-    function setVendorStatus(bool isActive, bool isOpen) external override {
+    function setVendorStatus(bool isActive) external override {
         if (!isVendor[msg.sender]) revert Errors.NotRegistered(msg.sender);
         
         VendorProfile storage profile = vendorProfiles[msg.sender];
         profile.isActive = isActive;
-        profile.isOpen = isOpen;
 
-        emit VendorStatusChanged(msg.sender, isActive, isOpen);
+        emit VendorStatusChanged(msg.sender, isActive);
+    }
+
+    /**
+     * @inheritdoc IVendorRegistry
+     */
+    function updateBusinessHours(DayHours[7] calldata newBusinessHours) external override {
+        if (!isVendor[msg.sender]) revert Errors.NotRegistered(msg.sender);
+        
+        // Validate business hours
+        for (uint256 i = 0; i < 7; i++) {
+            if (newBusinessHours[i].isOperating) {
+                if (newBusinessHours[i].openTime >= 1440) revert Errors.InvalidAmount(newBusinessHours[i].openTime); // Max 1440 minutes in a day
+                if (newBusinessHours[i].closeTime >= 1440) revert Errors.InvalidAmount(newBusinessHours[i].closeTime);
+                if (newBusinessHours[i].openTime >= newBusinessHours[i].closeTime) revert Errors.InvalidAmount(newBusinessHours[i].openTime);
+            }
+        }
+        
+        // Update business hours
+        for (uint256 i = 0; i < 7; i++) {
+            businessHours[msg.sender][i] = newBusinessHours[i];
+        }
+
+        emit BusinessHoursUpdated(msg.sender);
     }
 
     /**
@@ -344,6 +366,14 @@ contract VendorRegistry is IVendorRegistry, Ownable {
         }
         
         return vendors;
+    }
+
+    /**
+     * @inheritdoc IVendorRegistry
+     */
+    function getBusinessHours(address vendor) external view override returns (DayHours[7] memory) {
+        if (!isVendor[vendor]) revert Errors.NotRegistered(vendor);
+        return businessHours[vendor];
     }
 
     /**
