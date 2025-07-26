@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useCallback } from 'react';
 import { useContract, useContractRead, useContractWrite } from '@thirdweb-dev/react';
 import { useWallet } from './useWallet';
@@ -42,9 +43,6 @@ export function useDeliveryAgentRegistry() {
     deliveryAgentRegistryContract,
     'getDeliveryAgent',
     [address],
-    { 
-      enabled: !!isDeliveryAgent,
-    }
   );
 
   // Get total agents count
