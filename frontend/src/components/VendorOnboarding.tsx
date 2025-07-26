@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Store, Phone, Mail, MapPin, Camera, Wallet } from "lucide-react";
+import { Store, Phone, Mail, MapPin, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,7 +13,10 @@ interface VendorOnboardingProps {
   isLoading: boolean;
 }
 
-export default function VendorOnboarding({ onRegister, isLoading }: VendorOnboardingProps) {
+export default function VendorOnboarding({ 
+  onRegister, 
+  isLoading 
+}: VendorOnboardingProps) {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     storeName: "",
@@ -22,11 +25,11 @@ export default function VendorOnboarding({ onRegister, isLoading }: VendorOnboar
     email: "",
     address: "",
     cuisine: "",
-    deliveryRadius: "5"
+    deliveryRadius: "5",
   });
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -54,7 +57,7 @@ export default function VendorOnboarding({ onRegister, isLoading }: VendorOnboar
       toast({
         title: "Registration Failed",
         description: "Failed to register vendor. Please try again.",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
@@ -66,7 +69,9 @@ export default function VendorOnboarding({ onRegister, isLoading }: VendorOnboar
           <div className="w-16 h-16 bg-gradient-sunset rounded-2xl flex items-center justify-center mx-auto mb-4">
             <Store className="w-8 h-8 text-primary-foreground" />
           </div>
-          <CardTitle className="text-2xl text-foreground">Join ChopChain as a Vendor</CardTitle>
+          <CardTitle className="text-2xl text-foreground">
+            Join ChopChain as a Vendor
+          </CardTitle>
           <p className="text-muted-foreground">
             Start earning with blockchain-powered food delivery
           </p>
@@ -80,7 +85,9 @@ export default function VendorOnboarding({ onRegister, isLoading }: VendorOnboar
               <p className="font-medium text-sm">Instant Payments</p>
             </div>
             <div className="text-center">
-              <Badge className="bg-gradient-rewards text-accent-foreground mb-2">5% Rewards</Badge>
+              <Badge className="bg-gradient-rewards text-accent-foreground mb-2">
+                5% Rewards
+              </Badge>
               <p className="font-medium text-sm">CHOP Token Rewards</p>
             </div>
             <div className="text-center">
@@ -92,14 +99,18 @@ export default function VendorOnboarding({ onRegister, isLoading }: VendorOnboar
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Store Information */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-foreground">Store Information</h3>
+              <h3 className="text-lg font-semibold text-foreground">
+                Store Information
+              </h3>
               
               <div>
                 <Label htmlFor="storeName">Store Name *</Label>
                 <Input
                   id="storeName"
                   value={formData.storeName}
-                  onChange={(e) => handleInputChange("storeName", e.target.value)}
+                  onChange={(e) => 
+                    handleInputChange("storeName", e.target.value)
+                  }
                   placeholder="e.g., Mama Temi's Kitchen"
                   className="mt-1 rounded-xl"
                   required
@@ -111,7 +122,9 @@ export default function VendorOnboarding({ onRegister, isLoading }: VendorOnboar
                 <Textarea
                   id="description"
                   value={formData.description}
-                  onChange={(e) => handleInputChange("description", e.target.value)}
+                  onChange={(e) => 
+                    handleInputChange("description", e.target.value)
+                  }
                   placeholder="Tell customers about your amazing food..."
                   className="mt-1 rounded-xl min-h-[80px]"
                 />
@@ -122,7 +135,9 @@ export default function VendorOnboarding({ onRegister, isLoading }: VendorOnboar
                 <Input
                   id="cuisine"
                   value={formData.cuisine}
-                  onChange={(e) => handleInputChange("cuisine", e.target.value)}
+                  onChange={(e) => 
+                    handleInputChange("cuisine", e.target.value)
+                  }
                   placeholder="e.g., Nigerian, African, Continental"
                   className="mt-1 rounded-xl"
                 />
@@ -131,7 +146,9 @@ export default function VendorOnboarding({ onRegister, isLoading }: VendorOnboar
 
             {/* Contact Information */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-foreground">Contact Information</h3>
+              <h3 className="text-lg font-semibold text-foreground">
+                Contact Information
+              </h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -141,7 +158,9 @@ export default function VendorOnboarding({ onRegister, isLoading }: VendorOnboar
                     <Input
                       id="phone"
                       value={formData.phone}
-                      onChange={(e) => handleInputChange("phone", e.target.value)}
+                      onChange={(e) => 
+                        handleInputChange("phone", e.target.value)
+                      }
                       placeholder="+234 801 234 5678"
                       className="pl-10 rounded-xl"
                       required
@@ -157,7 +176,9 @@ export default function VendorOnboarding({ onRegister, isLoading }: VendorOnboar
                       id="email"
                       type="email"
                       value={formData.email}
-                      onChange={(e) => handleInputChange("email", e.target.value)}
+                      onChange={(e) => 
+                        handleInputChange("email", e.target.value)
+                      }
                       placeholder="vendor@example.com"
                       className="pl-10 rounded-xl"
                     />
@@ -177,7 +198,9 @@ export default function VendorOnboarding({ onRegister, isLoading }: VendorOnboar
                   <Input
                     id="address"
                     value={formData.address}
-                    onChange={(e) => handleInputChange("address", e.target.value)}
+                    onChange={(e) => 
+                      handleInputChange("address", e.target.value)
+                    }
                     placeholder="123 Victoria Island, Lagos, Nigeria"
                     className="pl-10 rounded-xl"
                     required
@@ -191,7 +214,9 @@ export default function VendorOnboarding({ onRegister, isLoading }: VendorOnboar
                   id="deliveryRadius"
                   type="number"
                   value={formData.deliveryRadius}
-                  onChange={(e) => handleInputChange("deliveryRadius", e.target.value)}
+                  onChange={(e) => 
+                    handleInputChange("deliveryRadius", e.target.value)
+                  }
                   placeholder="5"
                   className="mt-1 rounded-xl"
                   min="1"
@@ -222,7 +247,7 @@ export default function VendorOnboarding({ onRegister, isLoading }: VendorOnboar
               </Button>
               
               <p className="text-xs text-center text-muted-foreground mt-3">
-                By registering, you agree to ChopChain's vendor terms and conditions.
+                By registering, you agree to ChopChain&apos;s vendor terms and conditions.
                 Your wallet address will be registered on the blockchain.
               </p>
             </div>
