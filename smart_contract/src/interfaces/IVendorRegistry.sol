@@ -7,6 +7,18 @@ pragma solidity ^0.8.20;
  */
 interface IVendorRegistry {
     /**
+     * @notice Business hours for a single day
+     * @param isOperating Whether the vendor operates on this day
+     * @param openTime Opening time in minutes from midnight (e.g., 540 = 9:00 AM)
+     * @param closeTime Closing time in minutes from midnight (e.g., 1320 = 10:00 PM)
+     */
+    struct DayHours {
+        bool isOperating;
+        uint256 openTime;   // minutes from midnight
+        uint256 closeTime;  // minutes from midnight
+    }
+
+    /**
      * @notice Vendor profile struct containing all vendor information
      * @param vendorAddress The blockchain address of the vendor
      * @param storeName The name of the restaurant/store  
@@ -20,7 +32,6 @@ interface IVendorRegistry {
      * @param deliveryFee Standard delivery fee in USD (scaled by 1e18)
      * @param preparationTime Average preparation time in minutes
      * @param isActive Whether the vendor is currently accepting orders
-     * @param isOpen Whether the vendor is currently open for business
      * @param rating Average rating (scaled by 100, so 500 = 5.00 stars)
      * @param totalOrders Total number of completed orders
      * @param registeredAt Timestamp when vendor was registered
@@ -38,7 +49,6 @@ interface IVendorRegistry {
         uint256 deliveryFee; // in USD (scaled by 1e18) 
         uint256 preparationTime; // in minutes
         bool isActive;
-        bool isOpen;
         uint256 rating; // scaled by 100
         uint256 totalOrders;
         uint256 registeredAt;
@@ -84,7 +94,12 @@ interface IVendorRegistry {
     /**
      * @notice Emitted when a vendor's operational status changes
      */
-    event VendorStatusChanged(address indexed vendor, bool isActive, bool isOpen);
+    event VendorStatusChanged(address indexed vendor, bool isActive);
+
+    /**
+     * @notice Emitted when vendor business hours are updated
+     */
+    event BusinessHoursUpdated(address indexed vendor);
 
     /**
      * @notice Emitted when a menu item is added
@@ -161,9 +176,14 @@ interface IVendorRegistry {
     /**
      * @notice Sets vendor operational status
      * @param isActive Whether vendor is accepting orders
-     * @param isOpen Whether vendor is currently open
      */
-    function setVendorStatus(bool isActive, bool isOpen) external;
+    function setVendorStatus(bool isActive) external;
+
+    /**
+     * @notice Updates vendor business hours for all days of the week
+     * @param businessHours Array of business hours for each day (0=Sunday, 1=Monday, ..., 6=Saturday)
+     */
+    function updateBusinessHours(DayHours[7] calldata businessHours) external;
 
     /**
      * @notice Adds a new menu item
@@ -254,7 +274,14 @@ interface IVendorRegistry {
     function getMenuItem(address vendor, uint256 itemId) external view returns (MenuItem memory item);
 
     /**
-     * @notice Gets all active vendors
+     * @notice Gets vendor business hours
+     * @param vendor Address of the vendor
+     * @return businessHours Array of business hours for each day (0=Sunday, 1=Monday, ..., 6=Saturday)
+     */
+    function getBusinessHours(address vendor) external view returns (DayHours[7] memory businessHours);
+
+    /**
+     * @notice Gets all active vendors (accepting orders)
      * @return vendors Array of active vendor addresses
      */
     function getActiveVendors() external view returns (address[] memory vendors);

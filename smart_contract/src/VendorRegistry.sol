@@ -13,6 +13,7 @@ contract VendorRegistry is IVendorRegistry, Ownable {
     // Vendor storage
     mapping(address => VendorProfile) public vendorProfiles;
     mapping(address => bool) public override isVendor;
+    mapping(address => DayHours[7]) public businessHours;
     
     // Menu storage
     mapping(address => mapping(uint256 => MenuItem)) public menuItems;
@@ -72,11 +73,19 @@ contract VendorRegistry is IVendorRegistry, Ownable {
             deliveryFee: deliveryFee,
             preparationTime: preparationTime,
             isActive: true,
-            isOpen: true,
             rating: 500, // Default 5.00 rating
             totalOrders: 0,
             registeredAt: block.timestamp
         });
+
+        // Set default business hours (9 AM to 9 PM, Monday to Sunday)
+        for (uint256 i = 0; i < 7; i++) {
+            businessHours[msg.sender][i] = DayHours({
+                isOperating: true,
+                openTime: 540,  // 9:00 AM
+                closeTime: 1260 // 9:00 PM
+            });
+        }
 
         isVendor[msg.sender] = true;
         vendorAddresses.push(msg.sender);
