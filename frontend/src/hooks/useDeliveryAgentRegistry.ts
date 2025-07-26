@@ -18,7 +18,7 @@ export function useDeliveryAgentRegistry() {
   const { chain, address } = useWallet();
   const { toast } = useToast();
 
-  const chainId = chain?.id || 31337;
+  const chainId = parseInt(chain) || 31337;
   const contracts = getContracts(chainId);
 
   const { contract: deliveryAgentRegistryContract } = useContract(contracts.DeliveryAgentRegistry);

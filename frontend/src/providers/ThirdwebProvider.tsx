@@ -1,13 +1,44 @@
 import { ThirdwebProvider, coinbaseWallet, metamaskWallet, walletConnect } from "@thirdweb-dev/react";
-import { Ethereum, Polygon, Arbitrum, Optimism } from "@thirdweb-dev/chains";
+import { Base, Ethereum, Sepolia } from "@thirdweb-dev/chains";
 import React from 'react';
 
-// Chain configurations
+// Custom Base Sepolia chain configuration
+const BaseSepolia = {
+  id: 84532,
+  chainId: 84532,
+  name: "Base Sepolia",
+  chain: "base-sepolia",
+  shortName: "base-sep",
+  slug: "base-sepolia",
+  nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+  rpc: ["https://sepolia.base.org"],
+  explorers: [
+    { name: "Basescan", url: "https://sepolia.basescan.org", standard: "EIP3091" },
+  ],
+  testnet: true,
+};
+
+// Localhost chain configuration for Anvil
+const Localhost = {
+  id: 31337,
+  chainId: 31337,
+  name: "Localhost",
+  chain: "localhost",
+  shortName: "local",
+  slug: "localhost",
+  nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+  rpc: ["http://localhost:8545"],
+  explorers: [],
+  testnet: true,
+};
+
+// Chain configurations - Localhost first for development
 const activeChains = [
-  Ethereum, // Mainnet
-  Polygon,  // Polygon mainnet
-  Arbitrum, // Arbitrum One
-  Optimism  // Optimism mainnet
+  Localhost,      // Local development (Anvil)
+  Base,           // Base mainnet
+  BaseSepolia,    // Base testnet
+  Ethereum,       // Ethereum mainnet
+  Sepolia         // Ethereum testnet
 ];
 
 // Wallet configurations
@@ -19,7 +50,7 @@ const supportedWallets = [
     recommended: true,
   }),
   walletConnect({
-    projectId: process.env.VITE_WALLETCONNECT_PROJECT_ID || "your-project-id",
+    projectId: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || "your-project-id",
     recommended: true,
   }),
 ];
@@ -32,9 +63,9 @@ export default function ThirdwebAppProvider({ children }: ThirdwebAppProviderPro
   return (
     <ThirdwebProvider
       supportedWallets={supportedWallets}
-      activeChain={Ethereum}
+      activeChain={Localhost}
       supportedChains={activeChains}
-      clientId={process.env.VITE_THIRDWEB_CLIENT_ID || "your-client-id"}
+      clientId={import.meta.env.VITE_THIRDWEB_CLIENT_ID || "your-client-id"}
       autoConnect={true}
       dAppMeta={{
         name: "ChopChain",

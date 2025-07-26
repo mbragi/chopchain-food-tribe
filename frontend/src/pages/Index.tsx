@@ -7,7 +7,7 @@ import UserTypeSelection from '@/components/UserTypeSelection';
 
 const Index = () => {
   const navigate = useNavigate();
-  const { 
+  const {
     isLoaded,
     shouldShowLanding,
     shouldShowMainApp,
@@ -15,6 +15,20 @@ const Index = () => {
     hasSeenLanding,
     userType
   } = useUserOnboarding();
+
+  // Handle navigation for onboarding step
+  useEffect(() => {
+    if (isLoaded && currentStep === 'onboarding') {
+      if (userType === 'vendor') {
+        navigate('/vendor/register');
+      } else if (userType === 'delivery_agent') {
+        navigate('/delivery-agent/register');
+      } else {
+        // For customers, complete onboarding and go to main app
+        navigate('/browse');
+      }
+    }
+  }, [isLoaded, currentStep, userType, navigate]);
 
   // Wait for state to load from localStorage
   if (!isLoaded) {
@@ -32,23 +46,11 @@ const Index = () => {
   switch (currentStep) {
     case 'landing':
       return <Landing />;
-      
+
     case 'user_type_selection':
       return <UserTypeSelection />;
-      
+
     case 'onboarding':
-      // Navigate to specific onboarding route
-      useEffect(() => {
-        if (userType === 'vendor') {
-          navigate('/vendor/register');
-        } else if (userType === 'delivery_agent') {
-          navigate('/delivery-agent/register');
-        } else {
-          // For customers, complete onboarding and go to main app
-          navigate('/browse');
-        }
-      }, [userType, navigate]);
-      
       return (
         <div className="min-h-screen flex items-center justify-center bg-background">
           <div className="text-center">
@@ -57,7 +59,7 @@ const Index = () => {
           </div>
         </div>
       );
-      
+
     case 'completed':
     default:
       return <FoodBrowsing />;
