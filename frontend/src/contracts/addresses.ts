@@ -13,12 +13,12 @@ export type ContractAddresses = {
 export const contracts: Record<string, ContractAddresses> = {
   // Local development (Foundry anvil)
   local: {
-    Escrow: "0xcD95e0E356A5f414894Be4bAD363acdaCcAb30a9",
-    CHOPToken: "0x6AE5E129054a5dBFCeBb9Dfcb1CE1AA229fB1Ddb",
-    VendorRegistry: "0xf13D09eD3cbdD1C930d4de74808de1f33B6b3D4f",
-    DeliveryAgentRegistry: "0x5c4a3C2CD1ffE6aAfDF62b64bb3E620C696c832E",
-    USDT: "0x5aAdFB43eF8dAF45DD80F4676345b7676f1D70e3", // Mock USDC (using as USDT)
-    USDC: "0x5aAdFB43eF8dAF45DD80F4676345b7676f1D70e3", // Mock USDC
+    Escrow: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+    CHOPToken: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+    VendorRegistry: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+    DeliveryAgentRegistry: "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+    USDT: "0x5FbDB2315678afecb367f032d93F642f64180aa3", // Mock USDC (using as USDT)
+    USDC: "0x5FbDB2315678afecb367f032d93F642f64180aa3", // Mock USDC
   },
 
   // Base Sepolia Testnet

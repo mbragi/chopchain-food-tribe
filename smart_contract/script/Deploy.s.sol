@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.20;
 
+import "forge-std/Script.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "../src/CHOPToken.sol";
 import "../src/Escrow.sol";
@@ -14,7 +15,7 @@ contract MockStablecoin is ERC20 {
     }
 }
 
-contract DeployScript {
+contract DeployScript is Script {
     function run()
         external
         returns (
@@ -25,6 +26,8 @@ contract DeployScript {
             address stablecoin
         )
     {
+        vm.startBroadcast();
+
         // Deploy Mock Stablecoin for local testing
         MockStablecoin mockStablecoin = new MockStablecoin();
 
@@ -46,6 +49,8 @@ contract DeployScript {
 
         // Set Escrow contract address in DeliveryAgentRegistry
         agentRegistry.setEscrowContract(address(escrowContract));
+
+        vm.stopBroadcast();
 
         // Return deployed addresses
         return (
